@@ -128,11 +128,11 @@
 
 		--color-text-light: #121212;
 
-		--color-panel-projects-light: rgb(238, 238, 238);
+		--color-panel-projects-light: rgb(169, 230, 169);
 
-		--color-panel-about-light: #dfdfdfd0;
+		--color-panel-about-light: #e75555d0;
 
-		--color-panel-garden-light: #cacacacb;
+		--color-panel-garden-light: rgba(240, 139, 23, 0.796);
 
 		/* Background Images */
 
@@ -642,6 +642,157 @@
 
 		.accordion-panel:focus {
 			outline-color: transparent;
+		}
+	}
+
+	/* --- 1. Global Setup: Layers --- */
+
+	.panel-projects::before,
+	.panel-projects::after,
+	.panel-about-me::before,
+	.panel-about-me::after,
+	.panel-garden::before {
+		content: '';
+		position: absolute;
+		/* Oversize the container to allow for rotation without gaps */
+		top: -50%;
+		left: -50%;
+		width: 200%;
+		height: 200%;
+		pointer-events: none;
+		z-index: 1;
+		transition: opacity 0.3s ease;
+	}
+
+	/* --- 2. Global Control: Disappear on Hover/Focus --- */
+
+	.accordion-panel:hover::before,
+	.accordion-panel:focus::before,
+	.accordion-panel:hover::after,
+	.accordion-panel:focus::after {
+		opacity: 0 !important;
+		animation: none !important;
+	}
+
+	/* --- 3. PROJECTS: "Parallax Hail" (Faster & Denser) --- */
+
+	/* Layer 1: The main, faster layer */
+	.panel-projects::before {
+		background-image: radial-gradient(circle, rgba(253, 253, 253, 0.4) 1.5px, transparent 2.5px);
+		/* Reduced size from 90px to 60px -> Closer together */
+		background-size: 60px 60px;
+		background-position: 0 0;
+
+		transform: rotate(20deg) scaleY(6);
+
+		/* Reduced time from 2.5s to 1.5s -> Faster */
+		animation: hail-fall-1 1.5s linear infinite;
+	}
+
+	/* Layer 2: The background, slower layer */
+	.panel-projects::after {
+		background-image: radial-gradient(circle, rgba(169, 207, 147, 0.4) 1px, transparent 2px);
+		/* Reduced size from 130px to 100px -> Closer together */
+		background-size: 100px 100px;
+		background-position: 50px 0;
+
+		transform: rotate(20deg) scaleY(5);
+
+		/* Reduced time from 4s to 2.5s -> Faster */
+		animation: hail-fall-2 2.5s linear infinite;
+	}
+
+	@keyframes hail-fall-1 {
+		0% {
+			background-position: 0 0;
+		}
+		100% {
+			background-position: 0 60px;
+		} /* Matches Layer 1 size */
+	}
+
+	@keyframes hail-fall-2 {
+		0% {
+			background-position: 50px 0;
+		}
+		100% {
+			background-position: 50px 100px;
+		} /* Matches Layer 2 size */
+	}
+
+	/* --- 4. ABOUT ME: "Continuous Ripples" --- */
+
+	.panel-about-me::before,
+	.panel-about-me::after {
+		/* Reset transform/positioning from the shared block defaults */
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		transform: none;
+
+		background-image: radial-gradient(
+			circle,
+			transparent 20%,
+			rgba(255, 255, 255, 0.2) 30%,
+			transparent 40%
+		);
+		background-position: center;
+		background-repeat: no-repeat;
+		opacity: 0;
+	}
+
+	.panel-about-me::before {
+		animation: ripple-loop 4s linear infinite;
+	}
+
+	.panel-about-me::after {
+		animation: ripple-loop 4s linear infinite 2s;
+	}
+
+	@keyframes ripple-loop {
+		0% {
+			background-size: 0% 0%;
+			opacity: 0;
+		}
+		15% {
+			opacity: 1;
+		}
+		100% {
+			background-size: 150% 150%;
+			opacity: 0;
+		}
+	}
+
+	/* --- 5. DIGITAL GARDEN: "Sunset" --- */
+
+	.panel-garden::before {
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		transform: none;
+
+		background-image: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, transparent 65%);
+		background-repeat: no-repeat;
+		background-size: 100% 60%;
+		animation: sun-setting 15s linear infinite;
+	}
+
+	@keyframes sun-setting {
+		0% {
+			background-position: 50% -60%;
+			opacity: 0.8;
+		}
+		10% {
+			opacity: 1;
+		}
+		90% {
+			opacity: 1;
+		}
+		100% {
+			background-position: 50% 160%;
+			opacity: 0.8;
 		}
 	}
 </style>

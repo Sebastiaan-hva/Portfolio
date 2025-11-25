@@ -1,287 +1,302 @@
 <script>
-	import { quintOut } from 'svelte/easing';
-	import { fly } from 'svelte/transition';
+	import { onMount } from 'svelte';
 
-	// Props - Standard JavaScript export declarations
-	export let title = '';
-	export let description = '';
-	export let readmeLink = '';
-	export let liveLink = '';
-	export let imageSrc = '';
-	export let mediaContent = [];
-	export let index = 0;
+	// Svelte 5: Props using $props() rune
+	let {
+		title = '',
+		shortDescription = '',
+		description = '', // The long description for the popover
+		readmeLink = '',
+		liveLink = '',
+		imageSrc = '',
+		mediaContent = [],
+		index = 0
+	} = $props();
 
-	// State for the image details popover
-	let detailsOpen = false;
-	let selectedMedia = mediaContent.length > 0 ? mediaContent[0] : null;
+	// Unique ID for this card's popover
+	const popoverId = `popover-${index}`;
 
-	function openMedia(media) {
-		selectedMedia = media;
-	}
+	// JS Fallback for staggered loading
+	// If CSS animations fail or you prefer JS control, this fades them in.
+	let isVisible = $state(false);
 
-	// Determine animation delay based on index for staggered load-in
-	const delay = index * 100; // 100ms delay per card
+	onMount(() => {
+		// Arrow notation fallback as requested
+		const staggerFadeIn = () => {
+			setTimeout(() => {
+				isVisible = true;
+			}, index * 75); // 150ms delay per card
+		};
+
+		staggerFadeIn();
+	});
 </script>
 
-<div
-	class="project-card"
-	style="--delay: {delay}ms;"
-	in:fly={{ y: 50, duration: 500, delay: delay, easing: quintOut }}
->
+<article class="project-card" class:visible={isVisible} style="--index: {index};">
 	<div class="project-card-inner">
 		<div class="project-image-column">
 			<h3 class="project-title-mobile">{title}</h3>
 			{#if imageSrc}
 				<img src={imageSrc} alt="{title} preview" class="project-image" />
 			{:else}
-				<div class="project-image-placeholder">No Image Available</div>
+				<div class="project-image-placeholder">No Image</div>
 			{/if}
 		</div>
 
 		<div class="project-content-column">
 			<h3 class="project-title-desktop">{title}</h3>
 
-			<p class="project-description">
-				{description}
+			<p class="project-short-description">
+				{shortDescription}
 			</p>
 
 			<div class="links">
-				<a href={readmeLink} target="_blank" class="link-button readme"> View Readme </a>
-				<a href={liveLink} target="_blank" class="link-button live"> View Live </a>
-				{#if mediaContent.length > 0}
-					<button class="link-button media-button" on:click={() => (detailsOpen = !detailsOpen)}>
-						{detailsOpen ? 'Hide Media' : 'Show Media'}
-					</button>
-				{/if}
+				<button class="link-button details-btn" popovertarget={popoverId}> Read More </button>
+
+				<a href={readmeLink} target="_blank" class="link-button readme">GitHub</a>
+				<a href={liveLink} target="_blank" class="link-button live">Live Demo</a>
 			</div>
 		</div>
 	</div>
 
-	{#if mediaContent.length > 0}
-		<div class="project-details-popover" class:open={detailsOpen} transition:slide>
-			<div class="media-tabs">
-				{#each mediaContent as media}
-					<button
-						class="media-tab"
-						class:active={media === selectedMedia}
-						on:click={() => openMedia(media)}
-					>
-						{media.type === 'image' ? 'Image' : 'Video'}
-					</button>
-				{/each}
+	<div id={popoverId} popover class="native-popover">
+		<div class="popover-content">
+			<div class="popover-header">
+				<h3>{title}</h3>
+				<button class="close-btn" popovertarget={popoverId} popovertargetaction="hide">×</button>
 			</div>
 
-			<div class="media-viewer">
-				{#if selectedMedia && selectedMedia.type === 'image'}
-					<img src={selectedMedia.src} alt="Project Media" class="media-display-image" />
-				{:else if selectedMedia && selectedMedia.type === 'video'}
-					<iframe
-						title="Project Video"
-						src={selectedMedia.src}
-						frameborder="0"
-						allow="autoplay; encrypted-media"
-						allowfullscreen
-						class="media-display-video"
-					></iframe>
+			<div class="popover-body">
+				<p class="long-description">{description}</p>
+
+				{#if mediaContent.length > 0}
+					<div class="media-preview">
+						<p>Media content available ({mediaContent.length} items)</p>
+					</div>
 				{/if}
 			</div>
 		</div>
-	{/if}
-</div>
+	</div>
+</article>
 
 <style>
-	/* --- Component Layout --- */
+	/* --- STAGGERED ANIMATION --- */
 	.project-card {
-		width: 100%; /* Full width of its parent */
-		margin: 20px 0;
-		padding: 0 10px;
-		color: #f0f0f0;
-		/* Animation: Svelte transition handles initial opacity and delay */
+		width: 100%;
+		opacity: 0; /* Hidden by default */
+		transform: translateY(20px);
+
+		/* 1. Define the animation 
+           2. Use calc() with the var(--index) passed from Svelte for the delay
+        */
+		animation: fadeInUp 0.6s ease-out forwards;
+		animation-delay: calc(var(--index) * 150ms);
 	}
 
+	/* Fallback: If animation fails or is overridden, JS class handles it */
+	.project-card.visible {
+		opacity: 1;
+		transform: translateY(0);
+		transition:
+			opacity 0.6s ease-out,
+			transform 0.6s ease-out;
+	}
+
+	@keyframes fadeInUp {
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* --- POPOVER STYLES --- */
+
+	/* The actual popover container */
+	[popover] {
+		margin: auto; /* Centers it in the viewport */
+		padding: 0;
+		border: none;
+		border-radius: 12px;
+		background: #1a1a1a;
+		color: #f0f0f0;
+		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+		width: 90%;
+		max-width: 600px;
+		opacity: 0;
+		transform: scale(0.9);
+		transition:
+			opacity 0.3s allow-discrete,
+			transform 0.3s allow-discrete,
+			display 0.3s allow-discrete;
+	}
+
+	/* Open State */
+	[popover]:popover-open {
+		opacity: 1;
+		transform: scale(1);
+	}
+
+	/* The Backdrop (dimmed background) */
+	[popover]::backdrop {
+		background-color: rgba(0, 0, 0, 0.7);
+		backdrop-filter: blur(4px);
+		opacity: 0;
+		transition:
+			opacity 0.3s allow-discrete,
+			display 0.3s allow-discrete;
+	}
+
+	[popover]:popover-open::backdrop {
+		opacity: 1;
+	}
+
+	/* Starting Style for Entry Animation (Newer CSS feature, enhances popover animation) */
+	@starting-style {
+		[popover]:popover-open {
+			opacity: 0;
+			transform: scale(0.9);
+		}
+		[popover]:popover-open::backdrop {
+			opacity: 0;
+		}
+	}
+
+	.popover-content {
+		padding: 30px;
+		text-align: left;
+	}
+
+	.popover-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 20px;
+		border-bottom: 1px solid #333;
+		padding-bottom: 15px;
+	}
+
+	.popover-header h3 {
+		margin: 0;
+		font-size: 1.8em;
+		color: #fff;
+	}
+
+	.close-btn {
+		background: none;
+		border: none;
+		color: #888;
+		font-size: 2em;
+		cursor: pointer;
+		line-height: 0.5;
+		padding: 10px;
+	}
+
+	.close-btn:hover {
+		color: #fff;
+	}
+
+	.long-description {
+		font-size: 1.1em;
+		line-height: 1.6;
+		color: #ddd;
+		white-space: pre-line; /* Preserves line breaks in description */
+	}
+
+	/* --- CARD LAYOUT (Simpler version) --- */
 	.project-card-inner {
 		display: flex;
 		background-color: #1a1a1a;
 		border-radius: 8px;
 		overflow: hidden;
-		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-		max-width: 1200px;
-		margin: 0 auto; /* Center the card */
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 	}
 
 	.project-image-column {
 		flex: 1;
-		min-width: 250px;
-		position: relative;
-		background-color: #0d0d0d;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
+		min-width: 200px;
+		background: #000;
 	}
 
 	.project-image {
 		width: 100%;
-		height: auto;
+		max-height: 300px;
 		object-fit: cover;
 	}
 
-	.project-image-placeholder {
-		padding: 20px;
-		text-align: center;
-		opacity: 0.5;
-	}
-
 	.project-content-column {
-		flex: 2; /* Takes 2/3 of the space */
-		padding: 30px;
+		flex: 2;
+		padding: 25px;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
-	}
-
-	.project-title-desktop {
-		font-size: 2.2em;
-		margin-top: 0;
-		margin-bottom: 20px;
 		text-align: left;
 	}
 
-	.project-title-mobile {
-		display: none; /* Hide on desktop */
+	.project-title-desktop {
+		margin-top: 0;
+		color: #fff;
 	}
 
-	.project-description {
-		font-size: 1.4em;
-		line-height: 1.6;
+	.project-short-description {
 		color: #bbb;
-		flex-grow: 1;
 		margin-bottom: 20px;
-
-		padding-right: 0;
-		text-align: left; /* FIX: Align description text to the left */
 	}
 
 	.links {
 		display: flex;
-		gap: 15px;
-		margin-top: 15px;
+		gap: 10px;
+		flex-wrap: wrap;
 	}
 
 	.link-button {
-		padding: 10px 20px;
-		border-radius: 6px;
+		padding: 8px 16px;
+		border-radius: 4px;
 		text-decoration: none;
 		font-weight: bold;
-		transition:
-			background-color 0.2s,
-			transform 0.1s;
-		text-align: center;
 		cursor: pointer;
-	}
-
-	.readme {
-		background-color: #555;
-		color: white;
-	}
-	.live {
-		background-color: #007bff;
-		color: white;
-	}
-	.media-button {
-		background-color: #8800ff;
-		color: white;
+		border: none;
+		font-size: 0.9em;
+		transition: transform 0.2s;
 	}
 
 	.link-button:hover {
 		transform: translateY(-2px);
 	}
 
-	/* --- Details Popover Section --- */
-	.project-details-popover {
-		max-width: 1200px;
-		margin: 10px auto 20px auto;
-		background-color: #000000;
-		border-radius: 8px;
-		padding: 20px;
-		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-		display: none; /* Svelte transition will manage visibility */
-		flex-direction: column;
-		gap: 15px;
-	}
-
-	.project-details-popover.open {
-		display: flex; /* Show when 'open' class is applied */
-	}
-
-	.media-tabs {
-		display: flex;
-		gap: 10px;
-		border-bottom: 1px solid #333;
-		padding-bottom: 10px;
-	}
-
-	.media-tab {
-		background: none;
-		border: none;
-		color: #bbb;
-		padding: 8px 15px;
-		cursor: pointer;
-		border-radius: 4px;
-		transition:
-			color 0.2s,
-			background-color 0.2s;
-	}
-
-	.media-tab:hover,
-	.media-tab.active {
+	.details-btn {
+		background-color: #8800ff;
 		color: white;
-		background-color: #2a2a2a;
+	}
+	.readme {
+		background-color: #333;
+		color: white;
+	}
+	.live {
+		background-color: #007bff;
+		color: white;
 	}
 
-	.media-viewer {
-		width: 100%;
-		aspect-ratio: 16 / 9; /* Standard video ratio */
-		background-color: #111;
-		border-radius: 4px;
-		overflow: hidden;
-	}
-
-	.media-display-image,
-	.media-display-video {
-		width: 100%;
-		height: 100%;
-		object-fit: contain; /* Ensures content fits without cropping */
-	}
-
-	/* --- Mobile Adaptation --- */
 	@media (max-width: 768px) {
 		.project-card-inner {
-			flex-direction: column; /* Stacks vertically */
-		}
-
-		.project-content-column {
-			order: 2;
-			padding: 30px;
-			display: flex;
 			flex-direction: column;
-			justify-content: space-between;
 		}
-
+		.project-image-column {
+			min-height: 200px;
+		}
 		.project-title-desktop {
-			display: none; /* Hide desktop title */
+			display: none;
 		}
-
 		.project-title-mobile {
-			display: block; /* Show mobile title */
-			font-size: 1.8em;
+			display: block;
 			padding: 15px;
+			margin: 0;
+			color: white;
 			text-align: center;
 		}
-
-		.links {
-			flex-direction: column;
-			gap: 10px;
+	}
+	@media (min-width: 769px) {
+		.project-title-mobile {
+			display: none;
 		}
 	}
 </style>

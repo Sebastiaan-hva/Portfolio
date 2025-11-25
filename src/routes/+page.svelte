@@ -128,11 +128,11 @@
 
 		--color-text-light: #121212;
 
-		--color-panel-projects-light: rgb(169, 230, 169);
+		--color-panel-projects-light: rgb(90, 90, 90);
 
-		--color-panel-about-light: #e75555d0;
+		--color-panel-about-light: #3b3b3bd0;
 
-		--color-panel-garden-light: rgba(240, 139, 23, 0.796);
+		--color-panel-garden-light: rgba(34, 34, 34, 0.796);
 
 		/* Background Images */
 
@@ -165,9 +165,9 @@
 	/* Base Colors (Dark Mode Default) */
 
 	:global(body) {
-		background-color: var(--color-bg-dark);
+		/* background-color: var(--color-bg-dark);
 
-		color: var(--color-text-dark);
+		color: var(--color-text-dark); */
 	}
 
 	/* --- Light Mode Overrides --- */

@@ -1,48 +1,46 @@
 <script>
 	import ProjectCard from '$lib/components/ProjectCard.svelte';
 
-	// Project data array - Updated with placeholders to test staggered loading
+	// Svelte 5: No need for $state if this array is static constants.
+	// If you fetch this data, you would use let projects = $state([...]);
 	const projects = [
 		{
 			title: 'Funda Listing Detail Page',
-			description: `This project involved a three-week challenge to build a new Listing Detail Page (LDP) for the Dutch real estate platform, Funda, using pure HTML, CSS, and JavaScript. 
-            The primary goal was to reconstruct the LDP from a Figma design, focusing on a responsive, mobile-first layout. Accessibility was a core requirement, enforced through semantic HTML.
+			shortDescription:
+				'A responsive reconstruction of the Funda LDP using pure HTML/CSS/JS and Liquid templating.',
+			description: `This project involved a three-week challenge to build a new Listing Detail Page (LDP) for the Dutch real estate platform, Funda. 
             
-            The technical implementation leveraged Server-Side Scripting (SSR) and Liquid templating. The server handled data routing and used Liquid for modular page structure. Critically, the SSR process dynamically loaded house images, optimizing delivery using the <picture> element to convert images to the AVIF format where possible, thus enhancing performance and preventing layout shift. 
-            Client-side features included a CSS-based carousel for image navigation and custom mobile menus.`,
-			readmeLink: 'https://github.com/Sebastiaan-hva/proof-of-concept?tab=readme-ov-file',
-			liveLink: 'https://proof-of-concept-1-6ez0.onrender.com/house/40/',
+            The technical implementation leveraged Server-Side Scripting (SSR) and Liquid templating. The server handled data routing and used Liquid for modular page structure. Critically, the SSR process dynamically loaded house images, optimizing delivery using the <picture> element to convert images to the AVIF format where possible.`,
+			readmeLink: 'https://github.com/Sebastiaan-hva/proof-of-concept',
+			liveLink: 'https://proof-of-concept-1-6ez0.onrender.com/',
 			imageSrc: '/funda-mobile.png',
 			mediaContent: []
 		},
 		{
 			title: 'Embassy of the Free Mind',
-			description: 'Redesign for the EFM built in SvelteKit.',
-			readmeLink:
-				'https://github.com/fdnd-agency/embassyofthefreemind/tree/dev?tab=readme-ov-file#sv',
+			shortDescription: 'Redesign for the EFM built in SvelteKit with a focus on accessibility.',
+			description:
+				'Full redesign for the Embassy of the Free Mind using SvelteKit. Focused on component reusability, accessibility (WCAG), and connecting to a headless CMS.',
+			readmeLink: '#',
 			liveLink: 'https://efm-j2.netlify.app/',
-			imageSrc: 'embassy.png',
+			imageSrc: '/embassy.png',
 			mediaContent: []
 		},
 		{
-			title: 'Squad page year book',
-			description: 'A Book.',
-			readmeLink: 'https://s13-squad-page.netlify.app/',
-			liveLink: 'https://efm-j2.netlify.app/',
+			title: 'Squad Page Yearbook',
+			shortDescription: 'A digital yearbook for our dev squad.',
+			description:
+				'A collaborative project creating a digital yearbook. Features include custom animations, profile cards, and a shared memory wall.',
+			readmeLink: '#',
+			liveLink: '#',
 			imageSrc: '/book.png',
 			mediaContent: []
 		},
 		{
-			title: 'AAAAAAAAAAAAAAA',
-			description: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA.',
-			readmeLink: '#',
-			liveLink: '#',
-			imageSrc: '/Joker.png',
-			mediaContent: []
-		},
-		{
-			title: 'BBBBBBBB',
-			description: 'BBBBBBBBBBBBBBBBBBBBBBBBBB.',
+			title: 'Interactive Dashboard',
+			shortDescription: 'D3.js data visualization dashboard.',
+			description:
+				'Interactive dashboard showing consumption data using D3.js. Includes filtering, sorting, and dynamic graph updates based on user input.',
 			readmeLink: '#',
 			liveLink: '#',
 			imageSrc: '/Joker.png',
@@ -56,15 +54,7 @@
 
 	<div class="projects-grid">
 		{#each projects as project, i (project.title)}
-			<ProjectCard
-				title={project.title}
-				description={project.description}
-				readmeLink={project.readmeLink}
-				liveLink={project.liveLink}
-				imageSrc={project.imageSrc}
-				mediaContent={project.mediaContent}
-				index={i}
-			/>
+			<ProjectCard {...project} index={i} />
 		{/each}
 	</div>
 </div>
@@ -76,7 +66,6 @@
 		min-height: 100vh;
 		color: white;
 		text-align: center;
-		/* Using a global font for consistency */
 		font-family: 'Playfair Display', serif;
 	}
 
@@ -86,9 +75,11 @@
 	}
 
 	.projects-grid {
-		/* Layout ensures cards are stacked vertically and centered */
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		gap: 30px; /* Adds space between stacked cards */
+		max-width: 1200px;
+		margin: 0 auto;
 	}
 </style>

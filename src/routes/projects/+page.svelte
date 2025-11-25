@@ -38,9 +38,8 @@
 		},
 		{
 			title: 'Interactive Dashboard',
-			shortDescription: 'D3.js data visualization dashboard.',
-			description:
-				'Interactive dashboard showing consumption data using D3.js. Includes filtering, sorting, and dynamic graph updates based on user input.',
+			shortDescription: '.',
+			description: '.',
 			readmeLink: '#',
 			liveLink: '#',
 			imageSrc: '/Joker.png',

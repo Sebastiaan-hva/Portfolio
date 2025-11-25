@@ -1,6 +1,6 @@
 <script>
 	import { onDestroy } from 'svelte';
-	import { onMount } from 'svelte'; // needed for getting initial system color
+	import { onMount } from 'svelte';
 
 	// --- STATE ---
 	let cards = [1, 2, 3, 4, 5];
@@ -8,10 +8,9 @@
 	let removingId = null;
 
 	// --- FEEDBACK STATE ---
-	let isClicking = false; // Controls the visual click animation
+	let isClicking = false;
 
 	// --- FLIP STATE ---
-	// Array to hold the IDs of the cards that are currently flipped (showing the front)
 	let flippedCards = [];
 
 	// Auto-Clicker State
@@ -25,7 +24,7 @@
 	// Color State
 	let colorIndex = 0;
 	const palettes = [
-		{ name: 'System', vars: '' }, // Uses default CSS :root (Light/Dark)
+		{ name: 'System', vars: '' },
 		{
 			name: 'Ocean',
 			vars: '--card-c1: #48cae4; --card-c2: #0077b6; --card-c3: #023e8a;',
@@ -48,10 +47,8 @@
 		}
 	];
 
-	// Reactive value to hold the currently active palette, falling back to system default color if 'System' is selected
-	let currentPrimaryColor = '#f25c54'; // Initial fallback color
+	let currentPrimaryColor = '#f25c54';
 
-	// Function to get the current system-based color (for 'System' mode)
 	function updateSystemColor() {
 		if (palettes[colorIndex].name === 'System' && typeof window !== 'undefined') {
 			const style = getComputedStyle(document.documentElement);
@@ -61,11 +58,9 @@
 
 	onMount(() => {
 		updateSystemColor();
-		// Listen for system theme changes (CSS handles the cards this is for the button color)
 		window.matchMedia('(prefers-color-scheme: dark)').addListener(updateSystemColor);
 	});
 
-	// Reactive statement that updates the primary color whenever colorIndex changes
 	$: {
 		if (palettes[colorIndex].primary) {
 			currentPrimaryColor = palettes[colorIndex].primary;
@@ -74,12 +69,11 @@
 		}
 	}
 
-	// --- FUNCTION FOR AUTO-CLICK FEEDBACK ---
 	function simulateClick() {
 		isClicking = true;
 		setTimeout(() => {
 			isClicking = false;
-		}, 120); // Duration click animation
+		}, 120);
 	}
 
 	// --- ACTIONS ---
@@ -183,101 +177,107 @@
 	});
 </script>
 
-<h1 class="background-title">Sebastiaan Hagoort</h1>
+<main class="page-container">
+	<h1 class="background-title">Sebastiaan Hagoort</h1>
 
-<div class="content-wrapper">
-	<div class="demo-info animate-entry">
-		<h2 class="animate-entry delay-1">Fanned Card Deck (Light and Dark mode)</h2>
-		<p class="animate-entry delay-2">
-			Controls: <strong>{cards.length}</strong> / 52 Cards
-		</p>
+	<div class="content-wrapper">
+		<div class="demo-info animate-entry">
+			<h2 class="animate-entry delay-1">Fanned Card Deck (Light and Dark mode)</h2>
+			<p class="animate-entry delay-2">
+				Controls: <strong>{cards.length}</strong> / 52 Cards
+			</p>
 
-		<div class="controls animate-entry delay-3">
-			<button
-				on:click={addCard}
-				style="background-color: {currentPrimaryColor}; border-color: {currentPrimaryColor}"
-				>Add +</button
-			>
-			<button
-				on:click={removeCard}
-				style="background-color: {currentPrimaryColor}; border-color: {currentPrimaryColor}"
-				>Remove -</button
-			>
-			<button
-				class="auto-btn"
-				class:active={isAuto}
-				class:clicking={isClicking}
-				on:click={toggleAuto}
-			>
-				{isAuto ? 'Stop' : 'Auto Click'}
-				{#if isAuto}
-					<div class="cursor-feedback"></div>
-				{/if}
-			</button>
+			<div class="controls animate-entry delay-3">
+				<button
+					on:click={addCard}
+					style="background-color: {currentPrimaryColor}; border-color: {currentPrimaryColor}"
+					>Add +</button
+				>
+				<button
+					on:click={removeCard}
+					style="background-color: {currentPrimaryColor}; border-color: {currentPrimaryColor}"
+					>Remove -</button
+				>
+				<button
+					class="auto-btn"
+					class:active={isAuto}
+					class:clicking={isClicking}
+					on:click={toggleAuto}
+				>
+					{isAuto ? 'Stop' : 'Auto Click'}
+					{#if isAuto}
+						<div class="cursor-feedback"></div>
+					{/if}
+				</button>
 
-			<button
-				on:click={flipAllCards}
-				style="background-color: #edb066; border-color: #ffc175; font-weight: 900;"
-			>
-				Flip Cards
-			</button>
+				<button
+					on:click={flipAllCards}
+					style="background-color: #edb066; border-color: #ffc175; font-weight: 900;"
+				>
+					Flip Cards
+				</button>
+			</div>
+
+			<div class="controls animate-entry delay-4">
+				<button
+					class="secondary"
+					on:click={fillDeck}
+					style="background-color: {currentPrimaryColor}">Full Stack</button
+				>
+				<button
+					class="secondary"
+					on:click={clearDeck}
+					style="background-color: {currentPrimaryColor}">Clear Deck</button
+				>
+			</div>
+
+			<div class="controls animate-entry delay-4">
+				<button
+					class="secondary shape-btn"
+					on:click={toggleShape}
+					class:arc={shapeMode === 'arc'}
+					class:roller={shapeMode === 'roller'}
+					class:flat={shapeMode === 'flat'}
+				>
+					Shape: {shapeMode.toUpperCase()}
+				</button>
+
+				<button
+					class="secondary color-btn"
+					on:click={toggleColor}
+					style="background-color: {currentPrimaryColor}"
+				>
+					Color: {palettes[colorIndex].name}
+				</button>
+			</div>
 		</div>
 
-		<div class="controls animate-entry delay-4">
-			<button class="secondary" on:click={fillDeck} style="background-color: {currentPrimaryColor}"
-				>Full Stack</button
-			>
-			<button class="secondary" on:click={clearDeck} style="background-color: {currentPrimaryColor}"
-				>Clear Deck</button
-			>
-		</div>
-
-		<div class="controls animate-entry delay-4">
-			<button
-				class="secondary shape-btn"
-				on:click={toggleShape}
-				class:arc={shapeMode === 'arc'}
-				class:roller={shapeMode === 'roller'}
-				class:flat={shapeMode === 'flat'}
-			>
-				Shape: {shapeMode.toUpperCase()}
-			</button>
-
-			<button
-				class="secondary color-btn"
-				on:click={toggleColor}
-				style="background-color: {currentPrimaryColor}"
-			>
-				Color: {palettes[colorIndex].name}
-			</button>
+		<div
+			class="hand {shapeMode} animate-entry delay-4"
+			style="--total: {cards.length}; {palettes[colorIndex].vars};"
+		>
+			{#each cards as cardId, index (cardId)}
+				<div
+					class="card"
+					class:added={index === cards.length - 1 && removingId === null}
+					class:removing={cardId === removingId}
+					class:flipped={flippedCards.includes(cardId)}
+					style="
+                        --i: {index}; 
+                        z-index: {index}; 
+                        --hue: {index * 10}deg; 
+                    "
+				></div>
+			{/each}
 		</div>
 	</div>
-
-	<div
-		class="hand {shapeMode} animate-entry delay-4"
-		style="--total: {cards.length}; {palettes[colorIndex].vars};"
-	>
-		{#each cards as cardId, index (cardId)}
-			<div
-				class="card"
-				class:added={index === cards.length - 1 && removingId === null}
-				class:removing={cardId === removingId}
-				class:flipped={flippedCards.includes(cardId)}
-				style="
-                    --i: {index}; 
-                    z-index: {index}; 
-                    --hue: {index * 10}deg; 
-                "
-			></div>
-		{/each}
-	</div>
-</div>
-
----
+</main>
 
 <style>
-	/* --- THEME VARIABLES --- */
-	:root {
+	/* 2. ISOLATED STYLES
+       All :root and :global(body) styles are moved to .page-container 
+    */
+	.page-container {
 		/* LIGHT MODE DEFAULTS */
 		--bg-outer: #1d3a2d;
 		--bg-inner: #3a7559;
@@ -285,15 +285,33 @@
 		--title-opacity: 0.1;
 
 		--card-c1: #f7b267;
-		--card-c2: #f25c54; /* Default primary card color */
+		--card-c2: #f25c54;
 		--card-c3: #f79d65;
 
 		--card-width: min(30vw, 200px);
 		--card-height: min(42vw, 280px);
+
+		/* BODY SIMULATION */
+		font-family: 'Poppins', sans-serif;
+		background-color: var(--bg-outer);
+		background-image: radial-gradient(circle, var(--bg-inner) 0%, var(--bg-outer) 100%);
+		color: var(--text-color);
+		margin: 0;
+		padding: 0;
+
+		/* Ensures it fills the screen like body */
+		min-height: 100vh;
+		width: 100%;
+		overflow-x: hidden;
+
+		transition:
+			background 0.5s ease,
+			color 0.5s ease;
 	}
 
+	/* DARK MODE - scoped to container */
 	@media (prefers-color-scheme: dark) {
-		:root {
+		.page-container {
 			/* DARK MODE DEFAULTS */
 			--bg-outer: #0f0f0f;
 			--bg-inner: #2c3e50;
@@ -301,26 +319,12 @@
 			--title-opacity: 0.15;
 
 			--card-c1: #4cc9f0;
-			--card-c2: #4361ee; /* Dark mode primary card color */
+			--card-c2: #4361ee;
 			--card-c3: #3a0ca3;
 		}
 	}
 
-	/* Global and Layout Styles  */
-
-	:global(body) {
-		font-family: 'Poppins', sans-serif;
-		background-color: var(--bg-outer);
-		background-image: radial-gradient(circle, var(--bg-inner) 0%, var(--bg-outer) 100%);
-		color: var(--text-color);
-		margin: 0;
-		padding: 0;
-		min-height: 100vh;
-		overflow-x: hidden;
-		transition:
-			background 0.5s ease,
-			color 0.5s ease;
-	}
+	/* Rest of the CSS remains largely the same, just scoped by Svelte automatically */
 
 	.background-title {
 		position: fixed;
@@ -370,6 +374,7 @@
 		align-items: center;
 		gap: 2rem;
 		padding: 2rem 1rem;
+		/* Ensure content wrapper doesn't collapse */
 		min-height: 100vh;
 	}
 	.demo-info {
@@ -543,7 +548,7 @@
 
 	/* Shape Transformations: card shape */
 	.shape-btn.arc {
-		border-radius: 8px 8px 16px 16px; /* Arch shape  */
+		border-radius: 8px 8px 16px 16px;
 		transform: rotate(-3deg);
 	}
 	.shape-btn.roller {
@@ -601,7 +606,7 @@
 		transition: transform 0.5s;
 		transform: translateZ(-1px);
 
-		/*  Back Pattern  */
+		/* Back Pattern  */
 		background-image:
 			repeating-linear-gradient(
 				-45deg,

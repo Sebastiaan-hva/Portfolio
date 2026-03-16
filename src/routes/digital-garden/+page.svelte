@@ -177,6 +177,8 @@
 	});
 </script>
 
+<a href="/liquid-gradient" class="next-button">Next →</a>
+
 <main class="page-container">
 	<h1 class="background-title">Sebastiaan Hagoort</h1>
 
@@ -325,6 +327,26 @@
 	}
 
 	/* Rest of the CSS remains largely the same, just scoped by Svelte automatically */
+
+	.next-button {
+		position: fixed;
+		top: 15px;
+		right: 20px;
+		z-index: 51;
+		background: none;
+		border: 2px solid #f0f0f0;
+		color: #f0f0f0;
+		padding: 8px 15px;
+		text-decoration: none;
+		border-radius: 5px;
+		font-weight: bold;
+		font-family: 'Poppins', sans-serif;
+		transition: background-color 0.2s, color 0.2s;
+	}
+	.next-button:hover {
+		background-color: #f0f0f0;
+		color: #121212;
+	}
 
 	.background-title {
 		position: fixed;

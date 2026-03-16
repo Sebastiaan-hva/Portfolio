@@ -29,9 +29,15 @@
 	});
 
 	// --- Start Animation Logic ---
+	// Only show the intro animation the first time per browser session.
 	onMount(() => {
+		if (sessionStorage.getItem('introSeen')) {
+			isLoading = false;
+			return;
+		}
 		setTimeout(() => {
 			isLoading = false;
+			sessionStorage.setItem('introSeen', '1');
 		}, 2500);
 	});
 

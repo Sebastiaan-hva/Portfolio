@@ -1,7 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "WebSearch",
+      "WebFetch(domain:www.instagram.com)",
+      "WebFetch(domain:breathdvinity.com)",
+      "WebFetch(domain:www.pinterest.com)",
+      "WebFetch(domain:knowyourmeme.com)",
+      "WebFetch(domain:aesthetics.fandom.com)",
+      "WebFetch(domain:www.tumblr.com)",
+      "WebFetch(domain:cybersigilism.com)",
+      "WebFetch(domain:www.aingelblood.com)",
+      "WebFetch(domain:www.reddit.com)",
+      "WebFetch(domain:www.tiktok.com)"
     ]
   }
 }

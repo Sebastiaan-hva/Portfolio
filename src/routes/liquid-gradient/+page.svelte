@@ -9,6 +9,12 @@
 	let showPopover = false;
 	let activePreset = 'liquid';
 
+	// ── Playback controls ──────────────────────────────────────────────────────
+	let speed      = 1;
+	let isPaused   = false;
+	let isReversed = false;
+	let controlValues = {};
+
 	// ── Shared vertex shader ────────────────────────────────────────────────────
 	const vertexShader = `
 		varying vec2 vUv;
@@ -51,6 +57,7 @@
 	const liquidFrag = `
 		uniform float uTime;
 		uniform vec2  uResolution;
+		uniform float uContrast;
 		varying vec2 vUv;
 		#define PI 3.14159265359
 		${NOISE_GLSL}
@@ -83,98 +90,151 @@
 			float snowMask=snowstorm(uv,t);
 			lum=mix(lum,.58,snowMask);
 			lum=lum*.40+.25;
+			lum=mix(0.5,lum,uContrast);
 			gl_FragColor=vec4(vec3(lum),1.);
 		}
 	`;
 
 	// ── 2. CYBERSIGILISM ───────────────────────────────────────────────────────
+	// Castlevania castle silhouette drawn with breathdvinity blade/arc language.
+	// EVA-02 color scheme: near-black bg → deep crimson → amber → warm white.
 	const cyberFrag = `
 		uniform float uTime;
 		uniform vec2  uResolution;
+		uniform float uGlow;
+		uniform float uScale;
 		varying vec2 vUv;
 		#define PI  3.14159265359
 		#define TAU 6.28318530718
-		${NOISE_GLSL}
 
-		vec2 rot2(vec2 p,float a){float s=sin(a),c=cos(a);return vec2(c*p.x-s*p.y,s*p.x+c*p.y);}
-		float glow(float d,float w){return exp(-abs(d)/w);}
-
-		// Polygon SDF
-		float sdPoly(vec2 p,float r,int n){
-			float a=TAU/float(n);
-			float bn=mod(atan(p.y,p.x),a)-a*.5;
-			return length(p)*cos(bn)-r;
+		// Tapered blade — leaf shape, zero width at both endpoints.
+		// s = edge softness: ~.004 crisp, ~.055 for glow pass.
+		float blade(vec2 p,vec2 a,vec2 b,float mw,float s){
+			vec2 pa=p-a,ba=b-a;
+			float t=clamp(dot(pa,ba)/dot(ba,ba),0.,1.);
+			float w=mw*sin(t*PI);
+			return smoothstep(w+s,.0,length(pa-ba*t));
 		}
-		// Star SDF
-		float sdStar(vec2 p,float r,int n,float m){
-			float an=TAU/float(n),en=PI/m;
-			vec2 acs=vec2(cos(an*.5),sin(an*.5));
-			vec2 ecs=vec2(cos(en),sin(en));
-			float bn=mod(atan(p.y,p.x)+PI*.5,an)-an*.5;
-			p=length(p)*vec2(cos(bn),abs(sin(bn)));
-			p-=r*acs;
-			p+=ecs*clamp(-dot(p,ecs),0.,r*acs.y/ecs.y);
-			return length(p)*sign(p.x);
+
+		// Tapered arc blade — scythe shape, zero width at both angle endpoints.
+		float tArc(vec2 p,vec2 cen,float r,float a0,float a1,float mw,float s){
+			vec2 q=p-cen;
+			float d=abs(length(q)-r);
+			float ang=atan(q.y,q.x);
+			float da=mod(ang-a0,TAU);
+			float span=mod(a1-a0,TAU);
+			float t=clamp(da/span,0.,1.);
+			float w=mw*sin(t*PI);
+			return smoothstep(w+s,.0,d)*step(da,span);
+		}
+
+		// Spike — tapers from sp at base to zero at tip.
+		float spike(vec2 p,vec2 tip,vec2 base,float sp,float s){
+			vec2 pa=p-base,ba=tip-base;
+			float t=clamp(dot(pa,ba)/dot(ba,ba),0.,1.);
+			float w=sp*(1.-t);
+			return smoothstep(w+s,.0,length(pa-ba*t));
 		}
 
 		void main(){
 			vec2 uv=vUv;
-			vec2 p=(uv-.5)*vec2(uResolution.x/uResolution.y,1.)*2.2;
-			float t=uTime;
-			float pulse=.5+.5*sin(t*1.3);
+			float ar=uResolution.x/uResolution.y;
+			vec2 p=(uv-.5)*vec2(ar,1.)*2./uScale;
+			float tm=uTime;
+			float pulse=.5+.5*sin(tm*.40);
 
-			// Background: deep purple/black with subtle noise vein
-			float bgNoise=fbm(p*.8+t*.04);
-			vec3 col=vec3(.01,.005,.025)+vec3(.04,.0,.08)*bgNoise;
+			float m=0.; // crisp mask
+			float g=0.; // glow mask (wider softness)
+			float cs=.004;  // crisp softness
+			float gs=.060;  // glow softness
+			vec2 mp=vec2(abs(p.x),p.y); // bilateral symmetry
 
-			// --- Rings ---
-			vec3 cyan=vec3(.0,.9,.85);
-			vec3 purp=vec3(.55,.0,1.);
-			vec3 gold=vec3(1.,.75,.1);
+			// ── CASTLE KEEP / CRUCIFIX SPINE ──────────────────────────────────
+			m+=blade(p, vec2(0.,-.93),vec2(0.,.93),.023,cs);
+			g+=blade(p, vec2(0.,-.93),vec2(0.,.93),.023,gs);
+			// Upper horizontal arm (cross bar)
+			m+=blade(p, vec2(-.76,.30),vec2(.76,.30),.019,cs);
+			g+=blade(p, vec2(-.76,.30),vec2(.76,.30),.019,gs);
+			// Lower reinforcing bar
+			m+=blade(p, vec2(-.43,.07),vec2(.43,.07),.013,cs);
 
-			float r1=abs(length(p)-.88); col+=cyan*glow(r1,.012)*(1.+pulse*.2);
-			float r2=abs(length(p)-.60); col+=purp*glow(r2,.010);
-			float r3=abs(length(p)-.32); col+=gold*glow(r3,.008);
-			float r4=abs(length(p)-.10); col+=cyan*glow(r4,.006);
+			// ── GOTHIC ARCHES (pointed entry arch) ────────────────────────────
+			// Inner arch arc — each side curves up to a point at the center top
+			m+=tArc(mp,vec2(.22,.30),.30,PI*.58,PI*1.06,.015,cs);
+			g+=tArc(mp,vec2(.22,.30),.30,PI*.58,PI*1.06,.015,gs);
+			// Outer arch — wider sweep
+			m+=tArc(mp,vec2(.36,.30),.46,PI*.60,PI*1.04,.012,cs);
 
-			// --- Rotating hexagram ---
-			vec2 sp1=rot2(p,t*.10);
-			float star1=sdStar(sp1,.80,6,3.);
-			col+=purp*glow(star1,.013)*.9;
+			// ── FLYING BUTTRESSES ─────────────────────────────────────────────
+			// Primary buttress — large arc from body sweeping down-out
+			m+=tArc(mp,vec2(.60,.00),.48,PI*.58,PI*1.16,.013,cs);
+			g+=tArc(mp,vec2(.60,.00),.48,PI*.58,PI*1.16,.013,gs);
+			// Counter-buttress
+			m+=tArc(mp,vec2(.44,.16),.34,PI*.60,PI*1.20,.011,cs);
+			// Outer buttress extension
+			m+=tArc(mp,vec2(.70,-.18),.36,PI*.66,PI*1.12,.010,cs);
 
-			// --- Counter-rotating pentagon ---
-			vec2 sp2=rot2(p,-t*.07);
-			float star2=sdStar(sp2,.50,5,2.5);
-			col+=cyan*glow(star2,.011)*.75;
+			// ── LANCET WINDOWS (pointed Gothic openings) ──────────────────────
+			// Lower lancet: two opposing arcs suggest a pointed window
+			m+=tArc(mp,vec2(.14,.04),.18,PI*.60,PI*1.00,.011,cs);
+			m+=tArc(mp,vec2(.14,.50),.18,PI*.02,PI*.42,.011,cs);
 
-			// --- Spinning triangle ---
-			vec2 sp3=rot2(p,t*.18);
-			float tri=sdPoly(sp3,.30,3);
-			col+=gold*glow(tri,.009)*.6;
+			// ── SIDE WING BLADES (organic body curves) ────────────────────────
+			m+=blade(mp,vec2(.06,.52),vec2(.60,.63),.013,cs);
+			m+=blade(mp,vec2(.06,.16),vec2(.58,.06),.012,cs);
+			m+=blade(mp,vec2(.08,-.10),vec2(.52,-.35),.011,cs);
 
-			// --- Radial spokes (12) ---
-			float angle=atan(p.y,p.x);
-			float radius=length(p);
-			float spokeAngle=mod(angle+t*.04,TAU/12.);
-			float spokeW=abs(spokeAngle-TAU/24.)/(TAU/24.);
-			float spokeGlow=max(0.,1.-spokeW*18.)*smoothstep(.12,.15,radius)*smoothstep(.90,.85,radius);
-			col+=gold*spokeGlow*.35;
+			// ── OUTER SHOULDER / GARGOYLE ARCS ────────────────────────────────
+			m+=tArc(mp,vec2(0.,0.),.72,-PI*.24,PI*.24,.016,cs);
+			g+=tArc(mp,vec2(0.,0.),.72,-PI*.24,PI*.24,.016,gs);
+			m+=blade(mp,vec2(.52,.46),vec2(.84,.24),.011,cs);
+			m+=blade(mp,vec2(.50,-.34),vec2(.82,-.14),.010,cs);
 
-			// --- Fine grid ---
-			vec2 grid=fract(p*5.)-.5;
-			float gridLine=min(abs(grid.x),abs(grid.y));
-			col+=vec3(.08,.0,.18)*glow(gridLine-.49,.004);
+			// ── BATTLEMENTS / MERLONS (top spikes) ────────────────────────────
+			m+=spike(p,  vec2(.000, .98),vec2(.000, .62),.019,cs);
+			m+=spike(mp, vec2(.130, .94),vec2(.090, .58),.015,cs);
+			m+=spike(mp, vec2(.285, .87),vec2(.185, .56),.012,cs);
+			m+=spike(mp, vec2(.455, .74),vec2(.285, .52),.010,cs);
+			m+=spike(mp, vec2(.625, .58),vec2(.365, .46),.008,cs);
+			// Battlement teeth between main spires
+			m+=spike(mp, vec2(.068, .95),vec2(.068, .76),.009,cs);
+			m+=spike(mp, vec2(.205, .88),vec2(.165, .70),.008,cs);
 
-			// --- Outer glyph circle (dashed) ---
-			float outerR=abs(length(p)-1.05);
-			float dashAngle=mod(atan(p.y,p.x)*24./TAU,1.);
-			float dash=step(.35,dashAngle);
-			col+=purp*glow(outerR,.009)*dash*.5;
+			// ── DUNGEON ROOT SPIKES (bottom) ──────────────────────────────────
+			m+=spike(p,  vec2(.000,-.98),vec2(.000,-.55),.019,cs);
+			m+=spike(mp, vec2(.155,-.92),vec2(.100,-.53),.015,cs);
+			m+=spike(mp, vec2(.325,-.82),vec2(.205,-.49),.012,cs);
+			m+=spike(mp, vec2(.505,-.66),vec2(.305,-.43),.010,cs);
 
-			// Tone map + vignette
-			float vig=1.-smoothstep(.6,1.4,length(p));
-			col*=vig;
-			col=col/(col+.4);
+			// ── ROSE WINDOW / CENTER CROSS ────────────────────────────────────
+			m+=tArc(mp,vec2(0.,.30),.11,-PI*.5,PI*.5,.009,cs);
+			m+=blade(p, vec2(0.,.20),vec2(0.,.40),.008,cs);
+			m+=blade(p, vec2(-.11,.30),vec2(.11,.30),.008,cs);
+
+			m=clamp(m,0.,1.);
+			g=clamp(g*uGlow,0.,1.);
+
+			// ── EVA-02 COLOR SCHEME ───────────────────────────────────────────
+			vec3 bg       =vec3(.022,.006,.008); // near-black, red tint
+			vec3 crimson  =vec3(.800,.078,.052); // deep EVA-02 red
+			vec3 amber    =vec3(1.00,.450,.065); // EVA-02 orange trim
+			vec3 warmWhite=vec3(1.00,.840,.640); // warm highlight
+
+			vec3 col=bg;
+			// Red glow halo behind the glyph
+			col+=vec3(.55,.030,.010)*g;
+			// Base crimson layer
+			col=mix(col,crimson,m*.88);
+			// Orange accent on brighter areas
+			col=mix(col,amber,m*m*(.52+pulse*.28));
+			// Warm-white highlight on peak intensity
+			col=mix(col,warmWhite,m*m*m*(.32+pulse*.32));
+			// Subtle central red radial glow
+			float dist=length(p);
+			col+=vec3(.50,.030,.010)*exp(-dist*1.5)*.10*(.7+pulse*.3);
+			// Edge vignette
+			col*=1.-smoothstep(.88,1.22,dist);
+
 			gl_FragColor=vec4(col,1.);
 		}
 	`;
@@ -183,6 +243,7 @@
 	const breakFrag = `
 		uniform float uTime;
 		uniform vec2  uResolution;
+		uniform float uBPM;
 		varying vec2 vUv;
 		${NOISE_GLSL}
 
@@ -192,8 +253,8 @@
 			vec2 uv=vUv;
 			float t=uTime;
 
-			// BPM timing (~180 BPM = 3 beats/s)
-			float bpm=3.;
+			// BPM timing — controlled by uBPM uniform
+			float bpm=uBPM;
 			float beat=mod(t*bpm,1.);
 			float attack=pow(max(0.,1.-beat*5.),2.); // sharp transient
 
@@ -259,6 +320,7 @@
 	const mangaFrag = `
 		uniform float uTime;
 		uniform vec2  uResolution;
+		uniform float uInk;
 		varying vec2 vUv;
 		#define PI 3.14159265359
 		${NOISE_GLSL}
@@ -284,7 +346,7 @@
 			// Slow drift to give life
 			float inkD=vfbm(p*3.2+t*.025);
 			float inkD2=vfbm(p*6.5-t*.018+5.3);
-			float density=inkD*.65+inkD2*.35; // 0..1, high = dark
+			float density=(inkD*.65+inkD2*.35)*uInk; // 0..1, high = dark
 
 			// Paper base
 			float paper=1.-density*.45;
@@ -341,6 +403,7 @@
 	const animeFrag = `
 		uniform float uTime;
 		uniform vec2  uResolution;
+		uniform float uBloom;
 		varying vec2 vUv;
 		#define PI 3.14159265359
 		${NOISE_GLSL}
@@ -370,11 +433,11 @@
 
 			// ─ Hot-pink skyline bloom ─
 			float bloom=exp(-length(p-vec2(.0,.18))*3.)*(.5+n*.3);
-			col+=vec3(.85,.08,.52)*bloom*.5;
+			col+=vec3(.85,.08,.52)*bloom*.5*uBloom;
 
 			// ─ Cyan city-light underlight ─
 			float cityGlow=exp(-length(p-vec2(.0,-.5))*2.)*(.4+n2*.3);
-			col+=vec3(.0,.58,.82)*cityGlow*.45;
+			col+=vec3(.0,.58,.82)*cityGlow*.45*uBloom;
 
 			// ─ Perspective grid (city floor) ─
 			vec2 fp=vec2(
@@ -422,51 +485,80 @@
 	// ── Preset definitions ─────────────────────────────────────────────────────
 	const presets = [
 		{
-			id: 'liquid',
-			name: 'Liquid',
-			frag: liquidFrag,
-			thumb: 'linear-gradient(135deg,#1e1e1e 0%,#6b6b6b 50%,#a6a6a6 100%)'
+			id: 'liquid', name: 'Liquid', frag: liquidFrag,
+			thumb: 'linear-gradient(135deg,#1e1e1e 0%,#6b6b6b 50%,#a6a6a6 100%)',
+			controls: [
+				{ id: 'uContrast', label: 'Contrast', min: 0.3, max: 2.0, step: 0.05, default: 1.0 }
+			]
 		},
 		{
-			id: 'cyber',
-			name: 'Sigil',
-			frag: cyberFrag,
-			thumb: 'radial-gradient(ellipse at center,#8800ff55 0%,#00eadf22 40%,#0a0015 100%),linear-gradient(135deg,#0a0015 0%,#1a004a 100%)'
+			id: 'cyber', name: 'Sigil', frag: cyberFrag,
+			thumb: 'linear-gradient(#141020,#141020) center/100% 100%,linear-gradient(to top,transparent 5%,#aaa 14% 16%,transparent 20%,transparent 80%,#aaa 84% 86%,transparent 95%) center/100% 100%',
+			controls: [
+				{ id: 'uGlow',  label: 'Glow', min: 0,   max: 1.5, step: 0.05, default: 0.35 },
+				{ id: 'uScale', label: 'Zoom', min: 0.5, max: 2.0, step: 0.05, default: 1.0  }
+			]
 		},
 		{
-			id: 'break',
-			name: 'Breakcore',
-			frag: breakFrag,
-			thumb: 'repeating-linear-gradient(0deg,#000 0px,#000 3px,#fff 3px,#fff 4px),linear-gradient(90deg,#ff000033,#00000099)'
+			id: 'break', name: 'Breakcore', frag: breakFrag,
+			thumb: 'repeating-linear-gradient(0deg,#000 0px,#000 3px,#fff 3px,#fff 4px),linear-gradient(90deg,#ff000033,#00000099)',
+			controls: [
+				{ id: 'uBPM', label: 'BPM', min: 0.5, max: 8.0, step: 0.5, default: 3.0 }
+			]
 		},
 		{
-			id: 'manga',
-			name: 'Berserk',
-			frag: mangaFrag,
-			thumb: 'repeating-linear-gradient(45deg,#ccc 0px,#ccc 1px,#eee8df 1px,#eee8df 6px)'
+			id: 'manga', name: 'Berserk', frag: mangaFrag,
+			thumb: 'repeating-linear-gradient(45deg,#ccc 0px,#ccc 1px,#eee8df 1px,#eee8df 6px)',
+			controls: [
+				{ id: 'uInk', label: 'Ink', min: 0.4, max: 1.8, step: 0.05, default: 1.0 }
+			]
 		},
 		{
-			id: 'anime',
-			name: 'Akira',
-			frag: animeFrag,
-			thumb: 'linear-gradient(180deg,#080024 0%,#4d0540 40%,#001f38 100%)'
+			id: 'anime', name: 'Akira', frag: animeFrag,
+			thumb: 'linear-gradient(180deg,#080024 0%,#4d0540 40%,#001f38 100%)',
+			controls: [
+				{ id: 'uBloom', label: 'Bloom', min: 0, max: 2.5, step: 0.1, default: 1.0 }
+			]
 		}
 	];
+
+	// initialise all control values from defaults
+	for (const p of presets) {
+		if (p.controls) for (const c of p.controls) controlValues[c.id] = c.default;
+	}
+
+	$: activePresetObj = presets.find(p => p.id === activePreset);
+
+	// ── Build uniforms for a preset (preserves uTime, reads controlValues) ─────
+	function buildUniforms(preset) {
+		const u = {
+			uTime:       { value: currentUniforms?.uTime?.value ?? 0 },
+			uResolution: { value: new THREE.Vector2(innerWidth, innerHeight) }
+		};
+		if (preset.controls) {
+			for (const c of preset.controls) u[c.id] = { value: controlValues[c.id] ?? c.default };
+		}
+		return u;
+	}
 
 	// ── Apply preset: swap material, keep same mesh ────────────────────────────
 	function applyPreset(preset) {
 		activePreset = preset.id;
 		if (!mesh) return;
 		mesh.material.dispose();
-		currentUniforms = {
-			uTime:       { value: 0 },
-			uResolution: { value: new THREE.Vector2(innerWidth, innerHeight) }
-		};
+		currentUniforms = buildUniforms(preset);
 		mesh.material = new THREE.ShaderMaterial({
 			uniforms:       currentUniforms,
 			vertexShader,
 			fragmentShader: preset.frag
 		});
+	}
+
+	// ── Live-update a single uniform from a control slider ────────────────────
+	function onControlChange(id, val) {
+		controlValues[id] = val;
+		controlValues = controlValues; // trigger Svelte reactivity
+		if (currentUniforms?.[id]) currentUniforms[id].value = val;
 	}
 
 	// ── Three.js setup ─────────────────────────────────────────────────────────
@@ -487,10 +579,7 @@
 
 		const vs = getViewSize();
 
-		currentUniforms = {
-			uTime:       { value: 0 },
-			uResolution: { value: new THREE.Vector2(innerWidth, innerHeight) }
-		};
+		currentUniforms = buildUniforms(presets[0]);
 
 		const material = new THREE.ShaderMaterial({
 			uniforms:       currentUniforms,
@@ -506,9 +595,11 @@
 
 		const tick = () => {
 			animFrameId = requestAnimationFrame(tick);
-			if (currentUniforms) {
+			const rawDelta = clock.getDelta();
+			if (currentUniforms && !isPaused) {
+				const d = rawDelta * speed * (isReversed ? -1 : 1);
 				currentUniforms.uTime.value =
-					(currentUniforms.uTime.value + clock.getDelta()) % TWO_PI_100;
+					((currentUniforms.uTime.value + d) % TWO_PI_100 + TWO_PI_100) % TWO_PI_100;
 			}
 			renderer.render(scene, camera);
 		};
@@ -568,6 +659,44 @@
 				</button>
 			{/each}
 		</div>
+
+		<hr class="section-divider" />
+
+		<p class="popover-title">Playback</p>
+		<div class="ctrl-row">
+			<button class="icon-btn" class:active={isPaused} on:click={() => (isPaused = !isPaused)} title={isPaused ? 'Play' : 'Pause'}>
+				{#if isPaused}
+					<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+				{:else}
+					<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+				{/if}
+			</button>
+			<button class="icon-btn" class:active={isReversed} on:click={() => (isReversed = !isReversed)} title="Reverse time">
+				<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.41"/></svg>
+			</button>
+			<div class="slider-field">
+				<span class="ctrl-label">Speed</span>
+				<input type="range" min="0.1" max="3" step="0.05" bind:value={speed} />
+				<span class="ctrl-val">{speed.toFixed(1)}×</span>
+			</div>
+		</div>
+
+		{#if activePresetObj?.controls?.length}
+			<hr class="section-divider" />
+			<p class="popover-title">{activePresetObj.name}</p>
+			{#each activePresetObj.controls as ctrl}
+				<div class="slider-field">
+					<span class="ctrl-label">{ctrl.label}</span>
+					<input
+						type="range"
+						min={ctrl.min} max={ctrl.max} step={ctrl.step}
+						value={controlValues[ctrl.id] ?? ctrl.default}
+						on:input={(e) => onControlChange(ctrl.id, +e.target.value)}
+					/>
+					<span class="ctrl-val">{(controlValues[ctrl.id] ?? ctrl.default).toFixed(2)}</span>
+				</div>
+			{/each}
+		{/if}
 	</div>
 {/if}
 
@@ -665,4 +794,70 @@
 		white-space: nowrap;
 	}
 	.preset-btn.active span { color: rgba(255,255,255,1); }
+
+	.section-divider {
+		border: none;
+		border-top: 1px solid rgba(255,255,255,.08);
+		margin: 12px 0;
+	}
+
+	.ctrl-row {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.icon-btn {
+		width: 28px;
+		height: 28px;
+		flex-shrink: 0;
+		border-radius: 6px;
+		border: 1px solid rgba(255,255,255,.15);
+		background: rgba(255,255,255,.07);
+		color: rgba(255,255,255,.60);
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background .15s, color .15s, border-color .15s;
+	}
+	.icon-btn:hover { background: rgba(255,255,255,.15); color: rgba(255,255,255,.9); }
+	.icon-btn.active {
+		background: rgba(255,255,255,.18);
+		color: rgba(255,255,255,1);
+		border-color: rgba(255,255,255,.45);
+	}
+
+	.slider-field {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		width: 100%;
+		margin-top: 6px;
+	}
+	.ctrl-row .slider-field { margin-top: 0; }
+
+	.ctrl-label {
+		font-size: 11px;
+		color: rgba(255,255,255,.40);
+		font-family: system-ui, sans-serif;
+		white-space: nowrap;
+		min-width: 52px;
+	}
+
+	.slider-field input[type=range] {
+		flex: 1;
+		accent-color: rgba(255,255,255,.75);
+		cursor: pointer;
+		height: 4px;
+		min-width: 0;
+	}
+
+	.ctrl-val {
+		font-size: 11px;
+		color: rgba(255,255,255,.50);
+		font-family: system-ui, monospace;
+		min-width: 38px;
+		text-align: right;
+	}
 </style>

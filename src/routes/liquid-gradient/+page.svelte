@@ -749,6 +749,11 @@
 		to   { opacity: 1; transform: translateY(0)   scale(1);   }
 	}
 
+	@keyframes slide-up {
+		from { transform: translateY(100%); }
+		to   { transform: translateY(0); }
+	}
+
 	.popover-title {
 		margin: 0 0 12px;
 		font-size: 11px;
@@ -859,5 +864,63 @@
 		font-family: system-ui, monospace;
 		min-width: 38px;
 		text-align: right;
+	}
+
+	/* ── Mobile: bottom sheet ───────────────────────────────────────────────── */
+	@media (max-width: 540px) {
+		.picker-btn {
+			bottom: 16px;
+			right: 16px;
+			width: 48px;
+			height: 48px;
+		}
+
+		.popover {
+			left: 0;
+			right: 0;
+			bottom: 0;
+			border-radius: 20px 20px 0 0;
+			border-bottom: none;
+			padding: 8px 16px calc(20px + env(safe-area-inset-bottom));
+			animation: slide-up .22s ease;
+		}
+
+		/* drag handle */
+		.popover::before {
+			content: '';
+			display: block;
+			width: 36px;
+			height: 4px;
+			background: rgba(255,255,255,.2);
+			border-radius: 2px;
+			margin: 0 auto 14px;
+		}
+
+		.grid {
+			grid-template-columns: repeat(5, 1fr);
+			gap: 8px;
+		}
+
+		.thumb {
+			width: 100%;
+			height: 36px;
+		}
+
+		.preset-btn span {
+			font-size: 10px;
+		}
+
+		.ctrl-row {
+			gap: 6px;
+		}
+
+		.icon-btn {
+			width: 36px;
+			height: 36px;
+		}
+
+		.slider-field input[type=range] {
+			height: 6px;
+		}
 	}
 </style>

@@ -10,8 +10,8 @@
 	let activePreset = 'liquid';
 
 	// ── Playback controls ──────────────────────────────────────────────────────
-	let speed      = 1;
-	let isPaused   = false;
+	let speed = 1;
+	let isPaused = false;
 	let isReversed = false;
 	let controlValues = {};
 
@@ -24,7 +24,7 @@
 		}
 	`;
 
-	// ── Shared noise helpers (inlined into each shader that needs them) ─────────
+	// ── Shared noise helpers  ─────────
 	const NOISE_GLSL = `
 		vec3 _mod289v3(vec3 x){return x-floor(x*(1./289.))*289.;}
 		vec2 _mod289v2(vec2 x){return x-floor(x*(1./289.))*289.;}
@@ -53,7 +53,7 @@
 		float hash2(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 	`;
 
-	// ── 1. LIQUID GRADIENT (original) ──────────────────────────────────────────
+	// ── 1. LIQUID GRADIENT  ──────────────────────────────────────────
 	const liquidFrag = `
 		uniform float uTime;
 		uniform vec2  uResolution;
@@ -96,8 +96,7 @@
 	`;
 
 	// ── 2. CYBERSIGILISM ───────────────────────────────────────────────────────
-	// Castlevania castle silhouette drawn with breathdvinity blade/arc language.
-	// EVA-02 color scheme: near-black bg → deep crimson → amber → warm white.
+
 	const cyberFrag = `
 		uniform float uTime;
 		uniform vec2  uResolution;
@@ -316,7 +315,7 @@
 		}
 	`;
 
-	// ── 4. SEINEN MANGA (Berserk) ──────────────────────────────────────────────
+	// ── 4. SEINEN ──────────────────────────────────────────────
 	const mangaFrag = `
 		uniform float uTime;
 		uniform vec2  uResolution;
@@ -399,7 +398,7 @@
 		}
 	`;
 
-	// ── 5. 80s / 90s ANIME (Akira / Devilman OVA) ─────────────────────────────
+	// ── 5. 80s ─────────────────────────────
 	const animeFrag = `
 		uniform float uTime;
 		uniform vec2  uResolution;
@@ -485,40 +484,46 @@
 	// ── Preset definitions ─────────────────────────────────────────────────────
 	const presets = [
 		{
-			id: 'liquid', name: 'Liquid', frag: liquidFrag,
+			id: 'liquid',
+			name: 'Liquid',
+			frag: liquidFrag,
 			thumb: 'linear-gradient(135deg,#1e1e1e 0%,#6b6b6b 50%,#a6a6a6 100%)',
 			controls: [
 				{ id: 'uContrast', label: 'Contrast', min: 0.3, max: 2.0, step: 0.05, default: 1.0 }
 			]
 		},
 		{
-			id: 'cyber', name: 'Sigil', frag: cyberFrag,
-			thumb: 'linear-gradient(#141020,#141020) center/100% 100%,linear-gradient(to top,transparent 5%,#aaa 14% 16%,transparent 20%,transparent 80%,#aaa 84% 86%,transparent 95%) center/100% 100%',
+			id: 'cyber',
+			name: 'Sigil',
+			frag: cyberFrag,
+			thumb:
+				'linear-gradient(#141020,#141020) center/100% 100%,linear-gradient(to top,transparent 5%,#aaa 14% 16%,transparent 20%,transparent 80%,#aaa 84% 86%,transparent 95%) center/100% 100%',
 			controls: [
-				{ id: 'uGlow',  label: 'Glow', min: 0,   max: 1.5, step: 0.05, default: 0.35 },
-				{ id: 'uScale', label: 'Zoom', min: 0.5, max: 2.0, step: 0.05, default: 1.0  }
+				{ id: 'uGlow', label: 'Glow', min: 0, max: 1.5, step: 0.05, default: 0.35 },
+				{ id: 'uScale', label: 'Zoom', min: 0.5, max: 2.0, step: 0.05, default: 1.0 }
 			]
 		},
 		{
-			id: 'break', name: 'Breakcore', frag: breakFrag,
-			thumb: 'repeating-linear-gradient(0deg,#000 0px,#000 3px,#fff 3px,#fff 4px),linear-gradient(90deg,#ff000033,#00000099)',
-			controls: [
-				{ id: 'uBPM', label: 'BPM', min: 0.5, max: 8.0, step: 0.5, default: 3.0 }
-			]
+			id: 'break',
+			name: 'Breakcore',
+			frag: breakFrag,
+			thumb:
+				'repeating-linear-gradient(0deg,#000 0px,#000 3px,#fff 3px,#fff 4px),linear-gradient(90deg,#ff000033,#00000099)',
+			controls: [{ id: 'uBPM', label: 'BPM', min: 0.5, max: 8.0, step: 0.5, default: 3.0 }]
 		},
 		{
-			id: 'manga', name: 'Berserk', frag: mangaFrag,
+			id: 'manga',
+			name: 'Berserk',
+			frag: mangaFrag,
 			thumb: 'repeating-linear-gradient(45deg,#ccc 0px,#ccc 1px,#eee8df 1px,#eee8df 6px)',
-			controls: [
-				{ id: 'uInk', label: 'Ink', min: 0.4, max: 1.8, step: 0.05, default: 1.0 }
-			]
+			controls: [{ id: 'uInk', label: 'Ink', min: 0.4, max: 1.8, step: 0.05, default: 1.0 }]
 		},
 		{
-			id: 'anime', name: 'Akira', frag: animeFrag,
+			id: 'anime',
+			name: 'Akira',
+			frag: animeFrag,
 			thumb: 'linear-gradient(180deg,#080024 0%,#4d0540 40%,#001f38 100%)',
-			controls: [
-				{ id: 'uBloom', label: 'Bloom', min: 0, max: 2.5, step: 0.1, default: 1.0 }
-			]
+			controls: [{ id: 'uBloom', label: 'Bloom', min: 0, max: 2.5, step: 0.1, default: 1.0 }]
 		}
 	];
 
@@ -527,12 +532,12 @@
 		if (p.controls) for (const c of p.controls) controlValues[c.id] = c.default;
 	}
 
-	$: activePresetObj = presets.find(p => p.id === activePreset);
+	$: activePresetObj = presets.find((p) => p.id === activePreset);
 
 	// ── Build uniforms for a preset (preserves uTime, reads controlValues) ─────
 	function buildUniforms(preset) {
 		const u = {
-			uTime:       { value: currentUniforms?.uTime?.value ?? 0 },
+			uTime: { value: currentUniforms?.uTime?.value ?? 0 },
 			uResolution: { value: new THREE.Vector2(innerWidth, innerHeight) }
 		};
 		if (preset.controls) {
@@ -548,7 +553,7 @@
 		mesh.material.dispose();
 		currentUniforms = buildUniforms(preset);
 		mesh.material = new THREE.ShaderMaterial({
-			uniforms:       currentUniforms,
+			uniforms: currentUniforms,
 			vertexShader,
 			fragmentShader: preset.frag
 		});
@@ -567,13 +572,13 @@
 		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		renderer.setSize(innerWidth, innerHeight);
 
-		scene  = new THREE.Scene();
+		scene = new THREE.Scene();
 		camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 1000);
 		camera.position.z = 50;
-		clock  = new THREE.Clock();
+		clock = new THREE.Clock();
 
 		const getViewSize = () => {
-			const h = Math.abs(camera.position.z * Math.tan(camera.fov * Math.PI / 360) * 2);
+			const h = Math.abs(camera.position.z * Math.tan((camera.fov * Math.PI) / 360) * 2);
 			return { width: h * camera.aspect, height: h };
 		};
 
@@ -582,7 +587,7 @@
 		currentUniforms = buildUniforms(presets[0]);
 
 		const material = new THREE.ShaderMaterial({
-			uniforms:       currentUniforms,
+			uniforms: currentUniforms,
 			vertexShader,
 			fragmentShader: liquidFrag
 		});
@@ -599,7 +604,7 @@
 			if (currentUniforms && !isPaused) {
 				const d = rawDelta * speed * (isReversed ? -1 : 1);
 				currentUniforms.uTime.value =
-					((currentUniforms.uTime.value + d) % TWO_PI_100 + TWO_PI_100) % TWO_PI_100;
+					(((currentUniforms.uTime.value + d) % TWO_PI_100) + TWO_PI_100) % TWO_PI_100;
 			}
 			renderer.render(scene, camera);
 		};
@@ -629,20 +634,32 @@
 	<title>Liquid Gradient</title>
 </svelte:head>
 
+<a href="/pretext" class="next-button">Next →</a>
+
 <canvas bind:this={canvas}></canvas>
 
 <!-- Wallpaper picker button -->
 <button class="picker-btn" on:click={() => (showPopover = !showPopover)} title="Change background">
-	<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-		stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-		<circle cx="12" cy="12" r="3"/>
-		<path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="20"
+		height="20"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="2"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+	>
+		<circle cx="12" cy="12" r="3" />
+		<path
+			d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+		/>
 	</svg>
 </button>
 
-<!-- Popover — does NOT close when picking a preset, only closes via backdrop or button -->
+<!-- Popover — does not close when picking a preset -->
 {#if showPopover}
-	<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
 	<div class="backdrop" on:click={() => (showPopover = false)}></div>
 	<div class="popover">
 		<p class="popover-title">Background</p>
@@ -664,15 +681,54 @@
 
 		<p class="popover-title">Playback</p>
 		<div class="ctrl-row">
-			<button class="icon-btn" class:active={isPaused} on:click={() => (isPaused = !isPaused)} title={isPaused ? 'Play' : 'Pause'}>
+			<button
+				class="icon-btn"
+				class:active={isPaused}
+				on:click={() => (isPaused = !isPaused)}
+				title={isPaused ? 'Play' : 'Pause'}
+			>
 				{#if isPaused}
-					<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="13"
+						height="13"
+						viewBox="0 0 24 24"
+						fill="currentColor"><polygon points="5,3 19,12 5,21" /></svg
+					>
 				{:else}
-					<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="13"
+						height="13"
+						viewBox="0 0 24 24"
+						fill="currentColor"
+						><rect x="6" y="4" width="4" height="16" /><rect
+							x="14"
+							y="4"
+							width="4"
+							height="16"
+						/></svg
+					>
 				{/if}
 			</button>
-			<button class="icon-btn" class:active={isReversed} on:click={() => (isReversed = !isReversed)} title="Reverse time">
-				<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.41"/></svg>
+			<button
+				class="icon-btn"
+				class:active={isReversed}
+				on:click={() => (isReversed = !isReversed)}
+				title="Reverse time"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="13"
+					height="13"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2.5"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					><polyline points="1 4 1 10 7 10" /><path d="M3.51 15a9 9 0 1 0 .49-3.41" /></svg
+				>
 			</button>
 			<div class="slider-field">
 				<span class="ctrl-label">Speed</span>
@@ -689,7 +745,9 @@
 					<span class="ctrl-label">{ctrl.label}</span>
 					<input
 						type="range"
-						min={ctrl.min} max={ctrl.max} step={ctrl.step}
+						min={ctrl.min}
+						max={ctrl.max}
+						step={ctrl.step}
 						value={controlValues[ctrl.id] ?? ctrl.default}
 						on:input={(e) => onControlChange(ctrl.id, +e.target.value)}
 					/>
@@ -701,9 +759,37 @@
 {/if}
 
 <style>
-	:global(body) { margin: 0; padding: 0; overflow: hidden; }
+	:global(body) {
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+	}
 
-	canvas { display: block; width: 100vw; height: 100vh; }
+	canvas {
+		display: block;
+		width: 100vw;
+		height: 100vh;
+	}
+
+	.next-button {
+		position: fixed;
+		top: 15px;
+		right: 20px;
+		z-index: 100;
+		background: none;
+		border: 2px solid #f0f0f0;
+		color: #f0f0f0;
+		padding: 8px 15px;
+		text-decoration: none;
+		border-radius: 5px;
+		font-weight: bold;
+		font-family: 'Poppins', sans-serif;
+		transition: background-color 0.2s, color 0.2s;
+	}
+	.next-button:hover {
+		background-color: #f0f0f0;
+		color: #121212;
+	}
 
 	.picker-btn {
 		position: fixed;
@@ -714,53 +800,72 @@
 		height: 44px;
 		border-radius: 50%;
 		border: none;
-		background: rgba(255,255,255,.12);
+		background: rgba(255, 255, 255, 0.12);
 		backdrop-filter: blur(12px);
 		-webkit-backdrop-filter: blur(12px);
-		color: rgba(255,255,255,.85);
+		color: rgba(255, 255, 255, 0.85);
 		cursor: pointer;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		transition: background .2s, transform .15s;
-		box-shadow: 0 2px 12px rgba(0,0,0,.35);
+		transition:
+			background 0.2s,
+			transform 0.15s;
+		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 	}
-	.picker-btn:hover { background: rgba(255,255,255,.22); transform: scale(1.08); }
+	.picker-btn:hover {
+		background: rgba(255, 255, 255, 0.22);
+		transform: scale(1.08);
+	}
 
-	.backdrop { position: fixed; inset: 0; z-index: 98; }
+	.backdrop {
+		position: fixed;
+		inset: 0;
+		z-index: 98;
+	}
 
 	.popover {
 		position: fixed;
 		bottom: 78px;
 		right: 24px;
 		z-index: 99;
-		background: rgba(14,12,20,.88);
+		background: rgba(14, 12, 20, 0.88);
 		backdrop-filter: blur(20px);
 		-webkit-backdrop-filter: blur(20px);
-		border: 1px solid rgba(255,255,255,.1);
+		border: 1px solid rgba(255, 255, 255, 0.1);
 		border-radius: 14px;
 		padding: 16px;
-		box-shadow: 0 8px 32px rgba(0,0,0,.55);
-		animation: pop-in .15s ease;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+		animation: pop-in 0.15s ease;
 	}
 
 	@keyframes pop-in {
-		from { opacity: 0; transform: translateY(8px) scale(.97); }
-		to   { opacity: 1; transform: translateY(0)   scale(1);   }
+		from {
+			opacity: 0;
+			transform: translateY(8px) scale(0.97);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0) scale(1);
+		}
 	}
 
 	@keyframes slide-up {
-		from { transform: translateY(100%); }
-		to   { transform: translateY(0); }
+		from {
+			transform: translateY(100%);
+		}
+		to {
+			transform: translateY(0);
+		}
 	}
 
 	.popover-title {
 		margin: 0 0 12px;
 		font-size: 11px;
 		font-weight: 600;
-		letter-spacing: .1em;
+		letter-spacing: 0.1em;
 		text-transform: uppercase;
-		color: rgba(255,255,255,.4);
+		color: rgba(255, 255, 255, 0.4);
 		font-family: system-ui, sans-serif;
 	}
 
@@ -780,10 +885,17 @@
 		flex-direction: column;
 		align-items: center;
 		gap: 6px;
-		transition: border-color .15s, transform .12s;
+		transition:
+			border-color 0.15s,
+			transform 0.12s;
 	}
-	.preset-btn:hover { border-color: rgba(255,255,255,.28); transform: scale(1.05); }
-	.preset-btn.active { border-color: rgba(255,255,255,.75); }
+	.preset-btn:hover {
+		border-color: rgba(255, 255, 255, 0.28);
+		transform: scale(1.05);
+	}
+	.preset-btn.active {
+		border-color: rgba(255, 255, 255, 0.75);
+	}
 
 	.thumb {
 		width: 60px;
@@ -794,15 +906,17 @@
 
 	.preset-btn span {
 		font-size: 11px;
-		color: rgba(255,255,255,.65);
+		color: rgba(255, 255, 255, 0.65);
 		font-family: system-ui, sans-serif;
 		white-space: nowrap;
 	}
-	.preset-btn.active span { color: rgba(255,255,255,1); }
+	.preset-btn.active span {
+		color: rgba(255, 255, 255, 1);
+	}
 
 	.section-divider {
 		border: none;
-		border-top: 1px solid rgba(255,255,255,.08);
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
 		margin: 12px 0;
 	}
 
@@ -817,20 +931,26 @@
 		height: 28px;
 		flex-shrink: 0;
 		border-radius: 6px;
-		border: 1px solid rgba(255,255,255,.15);
-		background: rgba(255,255,255,.07);
-		color: rgba(255,255,255,.60);
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		background: rgba(255, 255, 255, 0.07);
+		color: rgba(255, 255, 255, 0.6);
 		cursor: pointer;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		transition: background .15s, color .15s, border-color .15s;
+		transition:
+			background 0.15s,
+			color 0.15s,
+			border-color 0.15s;
 	}
-	.icon-btn:hover { background: rgba(255,255,255,.15); color: rgba(255,255,255,.9); }
+	.icon-btn:hover {
+		background: rgba(255, 255, 255, 0.15);
+		color: rgba(255, 255, 255, 0.9);
+	}
 	.icon-btn.active {
-		background: rgba(255,255,255,.18);
-		color: rgba(255,255,255,1);
-		border-color: rgba(255,255,255,.45);
+		background: rgba(255, 255, 255, 0.18);
+		color: rgba(255, 255, 255, 1);
+		border-color: rgba(255, 255, 255, 0.45);
 	}
 
 	.slider-field {
@@ -840,19 +960,21 @@
 		width: 100%;
 		margin-top: 6px;
 	}
-	.ctrl-row .slider-field { margin-top: 0; }
+	.ctrl-row .slider-field {
+		margin-top: 0;
+	}
 
 	.ctrl-label {
 		font-size: 11px;
-		color: rgba(255,255,255,.40);
+		color: rgba(255, 255, 255, 0.4);
 		font-family: system-ui, sans-serif;
 		white-space: nowrap;
 		min-width: 52px;
 	}
 
-	.slider-field input[type=range] {
+	.slider-field input[type='range'] {
 		flex: 1;
-		accent-color: rgba(255,255,255,.75);
+		accent-color: rgba(255, 255, 255, 0.75);
 		cursor: pointer;
 		height: 4px;
 		min-width: 0;
@@ -860,13 +982,13 @@
 
 	.ctrl-val {
 		font-size: 11px;
-		color: rgba(255,255,255,.50);
+		color: rgba(255, 255, 255, 0.5);
 		font-family: system-ui, monospace;
 		min-width: 38px;
 		text-align: right;
 	}
 
-	/* ── Mobile: bottom sheet ───────────────────────────────────────────────── */
+	/* ── Mobile ───────────────────────────────────────────────── */
 	@media (max-width: 540px) {
 		.picker-btn {
 			bottom: 16px;
@@ -882,7 +1004,7 @@
 			border-radius: 20px 20px 0 0;
 			border-bottom: none;
 			padding: 8px 16px calc(20px + env(safe-area-inset-bottom));
-			animation: slide-up .22s ease;
+			animation: slide-up 0.22s ease;
 		}
 
 		/* drag handle */
@@ -891,7 +1013,7 @@
 			display: block;
 			width: 36px;
 			height: 4px;
-			background: rgba(255,255,255,.2);
+			background: rgba(255, 255, 255, 0.2);
 			border-radius: 2px;
 			margin: 0 auto 14px;
 		}
@@ -919,7 +1041,7 @@
 			height: 36px;
 		}
 
-		.slider-field input[type=range] {
+		.slider-field input[type='range'] {
 			height: 6px;
 		}
 	}

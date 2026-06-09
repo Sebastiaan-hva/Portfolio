@@ -588,7 +588,7 @@
 
 		const vs = getViewSize();
 
-		const startPreset = presets.find(p => p.id === activePreset) || presets[0];
+		const startPreset = presets.find((p) => p.id === activePreset) || presets[0];
 
 		if (typeof localStorage !== 'undefined' && !localStorage.getItem('lg-visited')) {
 			showPopover = true;
@@ -802,14 +802,19 @@
 		font-weight: 500;
 		font-family: 'Poppins', sans-serif;
 		font-size: 0.85rem;
-		transition: background 0.2s, border-color 0.2s, color 0.2s;
+		transition:
+			background 0.2s,
+			border-color 0.2s,
+			color 0.2s;
 	}
 	.nav-btn:hover {
 		background: rgba(0, 0, 0, 0.7);
 		border-color: rgba(255, 255, 255, 0.35);
 		color: #fff;
 	}
-	.next-btn { right: 20px; }
+	.next-btn {
+		right: 20px;
+	}
 
 	.picker-btn {
 		position: fixed;
@@ -892,7 +897,7 @@
 	.popover-glsl {
 		font-size: 10px;
 		letter-spacing: 0.08em;
-		color: rgba(255,255,255,0.25);
+		color: rgba(255, 255, 255, 0.25);
 		margin: -4px 0 12px;
 		text-transform: uppercase;
 	}

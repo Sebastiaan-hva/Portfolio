@@ -103,7 +103,6 @@ Focus areas: component reusability, WCAG accessibility compliance, and connectin
 </script>
 
 <div class="projects-page">
-
 	<!-- ── PAGE HEADER ───────────────────────────────────────────────────────── -->
 	<header class="page-header">
 		<span class="eyebrow">Selected work</span>
@@ -121,9 +120,7 @@ Focus areas: component reusability, WCAG accessibility compliance, and connectin
 
 				<h2 class="pl-title">PrimedLifter</h2>
 
-				<p class="pl-tagline">
-					The Google Sheets workflow, rebuilt as a real coaching app.
-				</p>
+				<p class="pl-tagline">The Google Sheets workflow, rebuilt as a real coaching app.</p>
 
 				<ul class="pl-features" role="list">
 					{#each plFeatures as feat}
@@ -133,7 +130,8 @@ Focus areas: component reusability, WCAG accessibility compliance, and connectin
 
 				<div class="pl-stack">
 					{#each plStack as s, i}
-						<span>{s}</span>{#if i < plStack.length - 1}<span class="sep" aria-hidden="true">·</span>{/if}
+						<span>{s}</span>{#if i < plStack.length - 1}<span class="sep" aria-hidden="true">·</span
+							>{/if}
 					{/each}
 				</div>
 
@@ -141,13 +139,30 @@ Focus areas: component reusability, WCAG accessibility compliance, and connectin
 					<button class="pl-btn-detail" popovertarget="pl-popover">
 						Details
 						<svg viewBox="0 0 16 16" fill="none" width="13" height="13" aria-hidden="true">
-							<path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+							<path
+								d="M6 12l4-4-4-4"
+								stroke="currentColor"
+								stroke-width="1.5"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
 						</svg>
 					</button>
-					<a href="https://primedlifter.app" target="_blank" rel="noopener noreferrer" class="pl-btn-live">
+					<a
+						href="https://primedlifter.app"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="pl-btn-live"
+					>
 						primedlifter.app
 						<svg viewBox="0 0 16 16" fill="none" width="12" height="12" aria-hidden="true">
-							<path d="M3 13L13 3M13 3H7M13 3v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+							<path
+								d="M3 13L13 3M13 3H7M13 3v6"
+								stroke="currentColor"
+								stroke-width="1.5"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
 						</svg>
 					</a>
 				</div>
@@ -168,7 +183,12 @@ Focus areas: component reusability, WCAG accessibility compliance, and connectin
 			</div>
 			<p class="popover-body">{plDescription}</p>
 			<div class="popover-footer">
-				<a href="https://primedlifter.app" target="_blank" rel="noopener noreferrer" class="popover-link">
+				<a
+					href="https://primedlifter.app"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="popover-link"
+				>
 					primedlifter.app ↗
 				</a>
 			</div>
@@ -200,10 +220,20 @@ Focus areas: component reusability, WCAG accessibility compliance, and connectin
 					<div class="proj-links">
 						<button class="proj-btn" popovertarget="proj-{proj.id}">Details</button>
 						{#if proj.readmeLink}
-							<a href={proj.readmeLink} target="_blank" rel="noopener noreferrer" class="proj-btn ghost">GitHub</a>
+							<a
+								href={proj.readmeLink}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="proj-btn ghost">GitHub</a
+							>
 						{/if}
 						{#if proj.liveLink}
-							<a href={proj.liveLink} target="_blank" rel="noopener noreferrer" class="proj-btn ghost">Live ↗</a>
+							<a
+								href={proj.liveLink}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="proj-btn ghost">Live ↗</a
+							>
 						{/if}
 					</div>
 				</div>
@@ -213,16 +243,28 @@ Focus areas: component reusability, WCAG accessibility compliance, and connectin
 				<div class="popover-content">
 					<div class="popover-hdr">
 						<h3>{proj.title}</h3>
-						<button class="close-btn" popovertarget="proj-{proj.id}" popovertargetaction="hide">×</button>
+						<button class="close-btn" popovertarget="proj-{proj.id}" popovertargetaction="hide"
+							>×</button
+						>
 					</div>
 					<p class="popover-body">{proj.description}</p>
 					{#if proj.readmeLink || proj.liveLink}
 						<div class="popover-footer">
 							{#if proj.readmeLink}
-								<a href={proj.readmeLink} target="_blank" rel="noopener noreferrer" class="popover-link">GitHub ↗</a>
+								<a
+									href={proj.readmeLink}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="popover-link">GitHub ↗</a
+								>
 							{/if}
 							{#if proj.liveLink}
-								<a href={proj.liveLink} target="_blank" rel="noopener noreferrer" class="popover-link">Live site ↗</a>
+								<a
+									href={proj.liveLink}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="popover-link">Live site ↗</a
+								>
 							{/if}
 						</div>
 					{/if}
@@ -230,7 +272,6 @@ Focus areas: component reusability, WCAG accessibility compliance, and connectin
 			</div>
 		{/each}
 	</section>
-
 </div>
 
 <style>
@@ -354,7 +395,9 @@ Focus areas: component reusability, WCAG accessibility compliance, and connectin
 		font-size: 0.76rem;
 		color: rgba(255, 255, 255, 0.58);
 		letter-spacing: 0.01em;
-		transition: border-color 0.2s, color 0.2s;
+		transition:
+			border-color 0.2s,
+			color 0.2s;
 	}
 
 	.pl-features li:hover {
@@ -444,8 +487,13 @@ Focus areas: component reusability, WCAG accessibility compliance, and connectin
 	}
 
 	@keyframes logo-drift {
-		0%, 100% { transform: translateY(0px) rotate(0deg); }
-		50%       { transform: translateY(-10px) rotate(1deg); }
+		0%,
+		100% {
+			transform: translateY(0px) rotate(0deg);
+		}
+		50% {
+			transform: translateY(-10px) rotate(1deg);
+		}
 	}
 
 	/* ── Other Work List ─────────────────────────────────────────────────────── */
@@ -483,8 +531,14 @@ Focus areas: component reusability, WCAG accessibility compliance, and connectin
 	}
 
 	@keyframes row-in {
-		from { opacity: 0; transform: translateY(24px); }
-		to   { opacity: 1; transform: translateY(0); }
+		from {
+			opacity: 0;
+			transform: translateY(24px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 
 	.proj-num {

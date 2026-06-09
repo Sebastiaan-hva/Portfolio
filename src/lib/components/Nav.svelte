@@ -52,7 +52,9 @@
 		width: 100%;
 		z-index: 50;
 		padding: 14px 20px;
-		transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+		transition:
+			background-color 0.3s ease,
+			backdrop-filter 0.3s ease;
 	}
 
 	/* Subtle blur effect when scrolled down */
@@ -82,7 +84,10 @@
 		font-weight: 500;
 		backdrop-filter: blur(8px);
 		-webkit-backdrop-filter: blur(8px);
-		transition: background 0.2s, border-color 0.2s, color 0.2s;
+		transition:
+			background 0.2s,
+			border-color 0.2s,
+			color 0.2s;
 	}
 
 	.home-button:hover {

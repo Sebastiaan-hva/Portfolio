@@ -42,10 +42,24 @@
 	});
 
 	const skills = [
-		'SvelteKit', 'Svelte 5', 'Astro', 'React', 'Vue / Quasar',
-		'TypeScript', 'JavaScript', 'HTML & CSS', 'Node.js', '11ty',
-		'Supabase', 'Firebase', 'PWA / Service Workers',
-		'Vite', 'Vitest', 'Playwright', 'Figma', 'Git'
+		'SvelteKit',
+		'Svelte 5',
+		'Astro',
+		'React',
+		'Vue / Quasar',
+		'TypeScript',
+		'JavaScript',
+		'HTML & CSS',
+		'Node.js',
+		'11ty',
+		'Supabase',
+		'Firebase',
+		'PWA / Service Workers',
+		'Vite',
+		'Vitest',
+		'Playwright',
+		'Figma',
+		'Git'
 	];
 
 	// Email split to avoid scraping
@@ -58,12 +72,13 @@
 	<div class="scroll-progress-bar"></div>
 
 	<main class="page-content">
-
 		<!-- HERO -->
 		<section class="s-hero" id="sec-hero">
 			<span class="hero-eyebrow">Frontend Developer · Netherlands</span>
-			<h1 class="hero-name">Sebastiaan<br>Hagoort</h1>
-			<p class="hero-sub">I build interfaces that feel fast, look intentional, and work on every screen.</p>
+			<h1 class="hero-name">Sebastiaan<br />Hagoort</h1>
+			<p class="hero-sub">
+				I build interfaces that feel fast, look intentional, and work on every screen.
+			</p>
 			<span class="scroll-hint" aria-hidden="true">scroll</span>
 		</section>
 
@@ -73,10 +88,10 @@
 		<!-- CRAFT -->
 		<section class="s-body s-craft" id="sec-craft">
 			<p>
-				My main stack is <strong>SvelteKit</strong> and <strong>TypeScript</strong>, but I've shipped
-				production code across Astro, React, Quasar/Vue, and vanilla JS. I care about the things most
-				users never notice until they're broken — scroll performance, animation timing, layout shifts,
-				accessibility.
+				My main stack is <strong>SvelteKit</strong> and <strong>TypeScript</strong>, but I've
+				shipped production code across Astro, React, Quasar/Vue, and vanilla JS. I care about the
+				things most users never notice until they're broken — scroll performance, animation timing,
+				layout shifts, accessibility.
 			</p>
 		</section>
 
@@ -97,9 +112,9 @@
 			<div class="callout-label">Personal project</div>
 			<p>
 				I got tired of spreadsheets and built <strong>PrimedLifter</strong> — a PWA that replaces the
-				Google Sheets + Drive workflow coaches are still stuck with. It handles RPE calculations,
-				auto-updating training maxes, backdown sets, athlete management, and video review in one place.
-				Built with SvelteKit and Supabase. Running in production, used with real athletes.
+				Google Sheets + Drive workflow coaches are still stuck with. It handles RPE calculations, auto-updating
+				training maxes, backdown sets, athlete management, and video review in one place. Built with
+				SvelteKit and Supabase. Running in production, used with real athletes.
 			</p>
 		</section>
 
@@ -108,10 +123,10 @@
 			<div class="callout-label">Internship</div>
 			<p>
 				On the professional side: I interned at <strong>IntoGolf</strong>, a SaaS company whose
-				platform is used by golf academies across the Netherlands. I worked across the public website
-				(Astro + React), the V3 coaching app (Quasar/Vue + Firebase), and V3 Pro — lesson management,
-				CRM, canvas-based video annotation, Mollie payments, and offline PWA. Real product, real users,
-				real constraints.
+				platform is used by golf academies across the Netherlands. I worked across the public
+				website (Astro + React), the V3 coaching app (Quasar/Vue + Firebase), and V3 Pro — lesson
+				management, CRM, canvas-based video annotation, Mollie payments, and offline PWA. Real
+				product, real users, real constraints.
 			</p>
 		</section>
 
@@ -128,15 +143,22 @@
 		<!-- CTA -->
 		<section class="s-cta" id="sec-contact">
 			<p class="cta-text">
-				Looking for a team where I can own meaningful frontend work —<br>
+				Looking for a team where I can own meaningful frontend work —<br />
 				not just implement designs, but help shape them.
 			</p>
 			<a href="mailto:{email}" class="cta-link">
 				{email}
-				<svg viewBox="0 0 16 16" fill="none" class="cta-arrow"><path d="M3 13L13 3M13 3H7M13 3v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+				<svg viewBox="0 0 16 16" fill="none" class="cta-arrow"
+					><path
+						d="M3 13L13 3M13 3H7M13 3v6"
+						stroke="currentColor"
+						stroke-width="1.5"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					/></svg
+				>
 			</a>
 		</section>
-
 	</main>
 
 	<!-- DOCK — section navigator -->
@@ -175,7 +197,7 @@
 
 	.page-wrapper {
 		min-height: 100vh;
-		width: 100%;       /* was 100vw — that includes scrollbar width and causes horizontal overflow */
+		width: 100%; /* was 100vw — that includes scrollbar width and causes horizontal overflow */
 		overflow-x: hidden;
 		background-color: #0f0000;
 		color: #fff;
@@ -207,31 +229,59 @@
 	}
 
 	@keyframes scrollProgress {
-		from { transform: scaleY(0); }
-		to   { transform: scaleY(1); }
+		from {
+			transform: scaleY(0);
+		}
+		to {
+			transform: scaleY(1);
+		}
 	}
 
 	/* =============================================
 	   SHARED ANIMATION KEYFRAMES
 	   ============================================= */
 	@keyframes fade-up {
-		from { opacity: 0; transform: translateY(40px); }
-		to   { opacity: 1; transform: translateY(0); }
+		from {
+			opacity: 0;
+			transform: translateY(40px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 
 	@keyframes fade-left {
-		from { opacity: 0; transform: translateX(-32px); }
-		to   { opacity: 1; transform: translateX(0); }
+		from {
+			opacity: 0;
+			transform: translateX(-32px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
 	}
 
 	@keyframes fade-right {
-		from { opacity: 0; transform: translateX(32px); }
-		to   { opacity: 1; transform: translateX(0); }
+		from {
+			opacity: 0;
+			transform: translateX(32px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
 	}
 
 	@keyframes scale-up {
-		from { opacity: 0; transform: scale(0.95); }
-		to   { opacity: 1; transform: scale(1); }
+		from {
+			opacity: 0;
+			transform: scale(0.95);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
 	}
 
 	/* =============================================
@@ -239,8 +289,14 @@
 	   ============================================= */
 	/* Hero is above the fold — view() timeline won't fire on load, use regular animation */
 	@keyframes hero-entrance {
-		from { opacity: 0; transform: translateY(28px); }
-		to   { opacity: 1; transform: translateY(0); }
+		from {
+			opacity: 0;
+			transform: translateY(28px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 
 	.s-hero {
@@ -321,7 +377,10 @@
 	}
 
 	@keyframes scroll-hint-fade {
-		to { opacity: 0; transform: translateY(10px); }
+		to {
+			opacity: 0;
+			transform: translateY(10px);
+		}
 	}
 
 	/* =============================================
@@ -474,7 +533,9 @@
 		border: 1px solid rgba(255, 255, 255, 0.12);
 		font-size: 0.82rem;
 		color: rgba(255, 200, 200, 0.7);
-		transition: border-color 0.2s, color 0.2s;
+		transition:
+			border-color 0.2s,
+			color 0.2s;
 		cursor: default;
 	}
 
@@ -512,7 +573,9 @@
 		font-weight: 500;
 		border-bottom: 1px solid rgba(255, 255, 255, 0.25);
 		padding-bottom: 2px;
-		transition: border-color 0.2s, color 0.2s;
+		transition:
+			border-color 0.2s,
+			color 0.2s;
 	}
 
 	.cta-link:hover {
@@ -574,9 +637,15 @@
 	}
 
 	@keyframes dockBorderDance {
-		0%   { border-color: rgba(255, 255, 255, 0.08); }
-		50%  { border-color: rgba(200, 100, 100, 0.35); }
-		100% { border-color: rgba(255, 180, 180, 0.6); }
+		0% {
+			border-color: rgba(255, 255, 255, 0.08);
+		}
+		50% {
+			border-color: rgba(200, 100, 100, 0.35);
+		}
+		100% {
+			border-color: rgba(255, 180, 180, 0.6);
+		}
 	}
 
 	/* =============================================
@@ -609,7 +678,9 @@
 		color: rgba(255, 255, 255, 0.4);
 		filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
 		pointer-events: none;
-		transition: color 0.2s, transform 0.2s;
+		transition:
+			color 0.2s,
+			transform 0.2s;
 	}
 
 	/* Active section: petal lights up + a dot appears beneath it */
@@ -651,7 +722,9 @@
 		white-space: nowrap;
 		opacity: 0;
 		pointer-events: none;
-		transition: opacity 0.15s ease, transform 0.15s ease;
+		transition:
+			opacity 0.15s ease,
+			transform 0.15s ease;
 	}
 
 	.dock-item::after {
@@ -671,7 +744,9 @@
 			z-index: 10;
 		}
 
-		.dock-item:hover .flower-icon { color: #fff; }
+		.dock-item:hover .flower-icon {
+			color: #fff;
+		}
 
 		.dock-item:hover .dock-tip {
 			opacity: 1;

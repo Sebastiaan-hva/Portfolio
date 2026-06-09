@@ -199,11 +199,7 @@
 					style="background-color: {currentPrimaryColor}; border-color: {currentPrimaryColor}"
 					>Remove -</button
 				>
-				<button
-					class="auto-btn"
-					class:active={isAuto}
-					on:click={toggleAuto}
-				>
+				<button class="auto-btn" class:active={isAuto} on:click={toggleAuto}>
 					{isAuto ? 'Stop' : 'Auto Click'}
 					{#if isAuto}
 						<div class="cursor-feedback"></div>
@@ -343,7 +339,10 @@
 		font-family: 'Poppins', sans-serif;
 		backdrop-filter: blur(8px);
 		-webkit-backdrop-filter: blur(8px);
-		transition: background 0.2s, border-color 0.2s, color 0.2s;
+		transition:
+			background 0.2s,
+			border-color 0.2s,
+			color 0.2s;
 	}
 	.next-button:hover {
 		background: rgba(0, 0, 0, 0.7);
@@ -620,7 +619,9 @@
 		border-radius: 12px;
 		/* Use CSS variable so hover z-index rule can override (inline styles have higher specificity) */
 		z-index: var(--z-idx, 0);
-		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.2);
+		box-shadow:
+			0 4px 14px rgba(0, 0, 0, 0.35),
+			0 1px 3px rgba(0, 0, 0, 0.2);
 		border: 3px solid white;
 
 		transform-style: preserve-3d;
@@ -709,9 +710,15 @@
 	}
 
 	/* Hover logic */
-	.hand.arc:hover { --rot-scale: 8; }
-	.hand.roller:hover { --rot-scale: 15; }
-	.hand.flat:hover { --rot-scale: 3; }
+	.hand.arc:hover {
+		--rot-scale: 8;
+	}
+	.hand.roller:hover {
+		--rot-scale: 15;
+	}
+	.hand.flat:hover {
+		--rot-scale: 3;
+	}
 
 	/* Lift + spread every card on hover. We deliberately keep the natural
 	   z-index (var(--z-idx) = index, right-card-on-top) so the fan overlaps like
@@ -719,7 +726,8 @@
 	   and looked broken. */
 	.hand:hover .card:not(.added):not(.removing),
 	.hand:hover .card.flipped:not(.added):not(.removing) {
-		transform: rotate(calc(var(--rot-scale, 8) * 1deg * var(--offset))) translateY(calc(-40px + var(--abs-offset) * -6px));
+		transform: rotate(calc(var(--rot-scale, 8) * 1deg * var(--offset)))
+			translateY(calc(-40px + var(--abs-offset) * -6px));
 	}
 
 	/* Animation logic */

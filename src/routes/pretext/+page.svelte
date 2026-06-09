@@ -77,7 +77,7 @@
 		{
 			character: 'Meruem',
 			series: 'Hunter × Hunter',
-			text: "I was born in darkness. I knew nothing but power, and power told me everything I needed to know. The weak exist to serve the strong — that was the world I understood. And then I met someone who had nothing — no strength, no power, no value by any measure I had ever used — and she beat me. Every single time. What does that mean? What is it that I was missing all along? I want to know. For the first time in my existence, there is something in this world I want more than victory."
+			text: 'I was born in darkness. I knew nothing but power, and power told me everything I needed to know. The weak exist to serve the strong — that was the world I understood. And then I met someone who had nothing — no strength, no power, no value by any measure I had ever used — and she beat me. Every single time. What does that mean? What is it that I was missing all along? I want to know. For the first time in my existence, there is something in this world I want more than victory.'
 		},
 		{
 			character: 'Guts',
@@ -92,7 +92,7 @@
 		{
 			character: 'Madara Uchiha',
 			series: 'Naruto Shippuden',
-			text: "Wake up to reality. Nothing ever goes as planned in this accursed world. The longer you live, the more you realize that the only things that truly exist in this reality are merely pain, suffering, and futility. Listen — everywhere you look in this world, wherever there is light, there will always be shadows to be found. As long as there is a concept of victors, the vanquished will also exist. The selfish desire to protect peace ignites wars, and hatred is born to protect the things we love. These are nexuses, cause and effect bound together with no beginning and no end. The shinobi who took everything from me believed they were righteous. The leaders who sent them believed the same. And in the name of that righteousness, more were buried, and more swore revenge. That is the chain that strangles this world. I will break it — even if I must become the single villain that the whole of history remembers, so that everyone else may finally dream in peace."
+			text: 'Wake up to reality. Nothing ever goes as planned in this accursed world. The longer you live, the more you realize that the only things that truly exist in this reality are merely pain, suffering, and futility. Listen — everywhere you look in this world, wherever there is light, there will always be shadows to be found. As long as there is a concept of victors, the vanquished will also exist. The selfish desire to protect peace ignites wars, and hatred is born to protect the things we love. These are nexuses, cause and effect bound together with no beginning and no end. The shinobi who took everything from me believed they were righteous. The leaders who sent them believed the same. And in the name of that righteousness, more were buried, and more swore revenge. That is the chain that strangles this world. I will break it — even if I must become the single villain that the whole of history remembers, so that everyone else may finally dream in peace.'
 		}
 	];
 
@@ -306,10 +306,10 @@
 		</div>
 		<div class="header-right">
 			<p class="header-desc">
-				The orb drifts down the passage and the text wraps around it — like a
-				floated image, except CSS <em>can't</em> position a float vertically.
-				<em>Pretext</em> lays out each line off-screen, feeding a narrower width to
-				the lines the orb overlaps. <em>Drag</em> the orb, <em>pause</em> it, or
+				The orb drifts down the passage and the text wraps around it — like a floated image, except
+				CSS <em>can't</em> position a float vertically.
+				<em>Pretext</em> lays out each line off-screen, feeding a narrower width to the lines the
+				orb overlaps. <em>Drag</em> the orb, <em>pause</em> it, or
 				<em>resize</em> the column — it re-wraps every frame.
 			</p>
 		</div>
@@ -322,7 +322,11 @@
 		</div>
 
 		<div class="stage-scroll">
-			<div class="text-stage" bind:this={stageEl} style="width: {columnWidth}px; height: {textHeight}px;">
+			<div
+				class="text-stage"
+				bind:this={stageEl}
+				style="width: {columnWidth}px; height: {textHeight}px;"
+			>
 				<!-- live line-number gutter -->
 				<div class="line-gutter" aria-hidden="true">
 					{#each wrappedLines as _line, i}
@@ -335,8 +339,12 @@
 					<div
 						class="tline"
 						class:narrow={line.narrow}
-						style="top: {i * LINE_HEIGHT}px; width: {line.narrow ? narrowW : columnWidth}px; height: {LINE_HEIGHT}px; font-size: {FONT_SIZE}px; line-height: {LINE_HEIGHT}px;"
-					>{line.text}</div>
+						style="top: {i * LINE_HEIGHT}px; width: {line.narrow
+							? narrowW
+							: columnWidth}px; height: {LINE_HEIGHT}px; font-size: {FONT_SIZE}px; line-height: {LINE_HEIGHT}px;"
+					>
+						{line.text}
+					</div>
 				{/each}
 
 				<!-- the floating orb — drifts top to bottom, draggable, text flows around it -->
@@ -367,10 +375,14 @@
 		<div class="controls">
 			<button class="ctrl-btn" on:click={togglePause} aria-pressed={paused}>
 				{#if paused}
-					<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+					<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"
+						><path d="M8 5v14l11-7z" /></svg
+					>
 					Play
 				{:else}
-					<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z" /></svg>
+					<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"
+						><path d="M6 5h4v14H6zM14 5h4v14h-4z" /></svg
+					>
 					Pause
 				{/if}
 			</button>
@@ -593,15 +605,21 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background:
-			radial-gradient(circle at 32% 28%, rgba(255, 226, 170, 0.95), rgba(201, 162, 107, 0.9) 42%, rgba(120, 88, 40, 0.85) 100%);
+		background: radial-gradient(
+			circle at 32% 28%,
+			rgba(255, 226, 170, 0.95),
+			rgba(201, 162, 107, 0.9) 42%,
+			rgba(120, 88, 40, 0.85) 100%
+		);
 		box-shadow:
 			0 0 0 1px rgba(201, 162, 107, 0.4),
 			0 14px 50px rgba(201, 162, 107, 0.28),
 			inset 0 0 30px rgba(255, 240, 210, 0.25);
 		/* organic blob that gently morphs as it drifts */
 		border-radius: 47% 53% 44% 56% / 55% 48% 52% 45%;
-		animation: blob-morph 9s ease-in-out infinite, blob-spin 26s linear infinite;
+		animation:
+			blob-morph 9s ease-in-out infinite,
+			blob-spin 26s linear infinite;
 		/* float moves vertically via inline `top`; transition smooths the per-frame steps */
 		transition: top 0.06s linear;
 		will-change: top, border-radius, transform;
@@ -697,7 +715,10 @@
 		padding: 8px 16px;
 		border-radius: 6px;
 		cursor: pointer;
-		transition: background 0.2s, border-color 0.2s, color 0.2s;
+		transition:
+			background 0.2s,
+			border-color 0.2s,
+			color 0.2s;
 		min-width: 88px;
 		justify-content: center;
 	}
@@ -830,7 +851,9 @@
 		padding: 8px 18px;
 		border-radius: 4px;
 		cursor: pointer;
-		transition: border-color 0.2s, color 0.2s;
+		transition:
+			border-color 0.2s,
+			color 0.2s;
 	}
 
 	.randomize-btn:hover {

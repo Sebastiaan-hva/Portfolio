@@ -52,7 +52,8 @@ V3 Pro is the expanded platform for larger academies: lesson management, a CRM-s
 
 Stack: Astro, React (website) · Quasar/Vue, Firebase (V3 & V3 Pro) · PWA, service worker, push notifications.`,
 			liveLink: 'https://intogolf.nl',
-			readmeLink: ''
+			readmeLink: '',
+			logo: '/intogolf-logo.svg'
 		},
 		{
 			id: 'funda',
@@ -186,6 +187,9 @@ Focus areas: component reusability, WCAG accessibility compliance, and connectin
 
 				<div class="proj-body">
 					<div class="proj-top">
+						{#if proj.logo}
+							<img src={proj.logo} alt="{proj.title} logo" class="proj-logo" />
+						{/if}
 						<h3 class="proj-title">{proj.title}</h3>
 						<span class="proj-subtitle">{proj.subtitle}</span>
 						<span class="proj-tag">{proj.tag}</span>
@@ -502,6 +506,14 @@ Focus areas: component reusability, WCAG accessibility compliance, and connectin
 		align-items: baseline;
 		flex-wrap: wrap;
 		gap: 10px 12px;
+	}
+
+	.proj-logo {
+		width: 26px;
+		height: 26px;
+		flex-shrink: 0;
+		align-self: center;
+		opacity: 0.9;
 	}
 
 	.proj-title {

@@ -50,9 +50,9 @@
 		top: 0;
 		left: 0;
 		width: 100%;
-		z-index: 50; /* Above project cards, below loading screen */
-		padding: 15px 20px;
-		transition: background-color 0.3s ease;
+		z-index: 50;
+		padding: 14px 20px;
+		transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
 	}
 
 	/* Subtle blur effect when scrolled down */
@@ -68,21 +68,26 @@
 		justify-content: flex-start; /* Align button to the left */
 	}
 
+	/* Canonical dark-glass nav button — readable on dark pages AND bright gradients.
+	   The same style is mirrored by .next-button (digital-garden) and .nav-btn
+	   (liquid-gradient) so every page's nav controls look identical. */
 	.home-button {
-		background: none;
-		border: 2px solid #f0f0f0;
-		color: #f0f0f0;
-		padding: 8px 15px;
+		background: rgba(0, 0, 0, 0.5);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		color: rgba(255, 255, 255, 0.9);
+		padding: 8px 16px;
 		text-decoration: none;
-		border-radius: 5px;
-		font-weight: bold;
-		transition:
-			background-color 0.2s,
-			color 0.2s;
+		border-radius: 8px;
+		font-size: 0.85rem;
+		font-weight: 500;
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		transition: background 0.2s, border-color 0.2s, color 0.2s;
 	}
 
 	.home-button:hover {
-		background-color: #f0f0f0;
-		color: #121212;
+		background: rgba(0, 0, 0, 0.7);
+		border-color: rgba(255, 255, 255, 0.35);
+		color: #fff;
 	}
 </style>

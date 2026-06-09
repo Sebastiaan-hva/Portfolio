@@ -6,9 +6,11 @@
 	let cards = [1, 2, 3, 4, 5];
 	let nextId = 6;
 	let removingId = null;
-
-	// --- FEEDBACK STATE ---
-	let isClicking = false;
+	// Tracks ONLY the card currently playing its deal-in animation. Cleared after
+	// the animation ends so the card rejoins the normal hover fan-out. (Using
+	// "index === cards.length - 1" here would mark the top card as added forever,
+	// permanently excluding it from the :not(.added) hover rule.)
+	let addedId = null;
 
 	// --- FLIP STATE ---
 	let flippedCards = [];
@@ -69,17 +71,16 @@
 		}
 	}
 
-	function simulateClick() {
-		isClicking = true;
-		setTimeout(() => {
-			isClicking = false;
-		}, 120);
-	}
-
 	// --- ACTIONS ---
 	function addCard() {
 		if (cards.length < 52) {
-			cards = [...cards, nextId++];
+			const id = nextId++;
+			cards = [...cards, id];
+			addedId = id;
+			// Clear after the deal-in animation (0.5s) so the card joins the fan.
+			setTimeout(() => {
+				if (addedId === id) addedId = null;
+			}, 500);
 			return true;
 		}
 		if (isAuto) toggleAuto();
@@ -103,11 +104,9 @@
 			isAuto = false;
 		} else {
 			isAuto = true;
-			simulateClick();
 			addCard();
 
 			autoInterval = setInterval(() => {
-				simulateClick();
 				addCard();
 			}, 600);
 		}
@@ -184,7 +183,7 @@
 
 	<div class="content-wrapper">
 		<div class="demo-info animate-entry">
-			<h2 class="animate-entry delay-1">Fanned Card Deck (Light and Dark mode)</h2>
+			<h2 class="animate-entry delay-1">Fanned Card Deck</h2>
 			<p class="animate-entry delay-2">
 				Controls: <strong>{cards.length}</strong> / 52 Cards
 			</p>
@@ -203,7 +202,6 @@
 				<button
 					class="auto-btn"
 					class:active={isAuto}
-					class:clicking={isClicking}
 					on:click={toggleAuto}
 				>
 					{isAuto ? 'Stop' : 'Auto Click'}
@@ -261,13 +259,13 @@
 			{#each cards as cardId, index (cardId)}
 				<div
 					class="card"
-					class:added={index === cards.length - 1 && removingId === null}
+					class:added={cardId === addedId}
 					class:removing={cardId === removingId}
 					class:flipped={flippedCards.includes(cardId)}
 					style="
-                        --i: {index}; 
-                        z-index: {index}; 
-                        --hue: {index * 10}deg; 
+                        --i: {index};
+                        --z-idx: {index};
+                        --hue: {index * 10}deg;
                     "
 				></div>
 			{/each}
@@ -328,24 +326,29 @@
 
 	/* Rest of the CSS remains largely the same, just scoped by Svelte automatically */
 
+	/* Matches the layout Home button (Nav.svelte) for a consistent nav across pages */
 	.next-button {
 		position: fixed;
-		top: 15px;
+		top: 14px;
 		right: 20px;
 		z-index: 51;
-		background: none;
-		border: 2px solid #f0f0f0;
-		color: #f0f0f0;
-		padding: 8px 15px;
+		background: rgba(0, 0, 0, 0.5);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		color: rgba(255, 255, 255, 0.9);
+		padding: 8px 16px;
 		text-decoration: none;
-		border-radius: 5px;
-		font-weight: bold;
+		border-radius: 8px;
+		font-weight: 500;
+		font-size: 0.85rem;
 		font-family: 'Poppins', sans-serif;
-		transition: background-color 0.2s, color 0.2s;
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		transition: background 0.2s, border-color 0.2s, color 0.2s;
 	}
 	.next-button:hover {
-		background-color: #f0f0f0;
-		color: #121212;
+		background: rgba(0, 0, 0, 0.7);
+		border-color: rgba(255, 255, 255, 0.35);
+		color: #fff;
 	}
 
 	.background-title {
@@ -394,9 +397,12 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		justify-content: center;
 		gap: 2rem;
 		padding: 2rem 1rem;
-		/* Ensure content wrapper doesn't collapse */
+		/* border-box so the padding is INCLUDED in the 100vh — otherwise the wrapper
+		   is 100vh + 4rem tall and the page always shows a stray scrollbar */
+		box-sizing: border-box;
 		min-height: 100vh;
 	}
 	.demo-info {
@@ -482,13 +488,6 @@
 		animation: pulse 1s infinite;
 	}
 
-	/* Auto-Clicking Feedback */
-	.auto-btn.clicking {
-		transform: translateY(-1px) !important;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
-		transition: none;
-	}
-
 	/* Cursor styles */
 	.cursor-feedback {
 		position: absolute;
@@ -520,7 +519,7 @@
 			opacity 0.1s;
 	}
 
-	.auto-btn.clicking .cursor-feedback {
+	.auto-btn.active .cursor-feedback {
 		animation: auto-click-move 0.6s linear infinite;
 		opacity: 1;
 	}
@@ -589,12 +588,25 @@
 		height: var(--card-height);
 		margin-inline: auto;
 		perspective: 1000px;
-		pointer-events: none;
+		/* The hand itself is the hover target (was pointer-events:none). If only the
+		   cards caught hover, fanning a card up moved it out from under the cursor,
+		   :hover dropped, the fan collapsed, the card slid back under the cursor —
+		   and the whole thing oscillated. A stable container fixes that. */
+		pointer-events: auto;
 		transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 		margin-top: 5rem;
 	}
 	.hand.roller {
 		margin-top: 18rem;
+	}
+
+	/* Invisible hit-area that extends the hover zone into the space the cards fan
+	   into (up + sideways), so the hover never flickers as cards lift away. */
+	.hand::before {
+		content: '';
+		position: absolute;
+		inset: -90px -70px 0;
+		z-index: -1;
 	}
 
 	.card {
@@ -606,7 +618,9 @@
 		width: 100%;
 		height: 100%;
 		border-radius: 12px;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+		/* Use CSS variable so hover z-index rule can override (inline styles have higher specificity) */
+		z-index: var(--z-idx, 0);
+		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.2);
 		border: 3px solid white;
 
 		transform-style: preserve-3d;
@@ -695,11 +709,17 @@
 	}
 
 	/* Hover logic */
-	.hand:hover .card {
-		transform: rotate(calc(var(--rot-scale, 8) * var(--offset))) translateY(-50px);
-	}
-	.hand:hover .card.flipped {
-		transform: rotate(calc(var(--rot-scale, 8) * var(--offset))) translateY(-50px);
+	.hand.arc:hover { --rot-scale: 8; }
+	.hand.roller:hover { --rot-scale: 15; }
+	.hand.flat:hover { --rot-scale: 3; }
+
+	/* Lift + spread every card on hover. We deliberately keep the natural
+	   z-index (var(--z-idx) = index, right-card-on-top) so the fan overlaps like
+	   a real hand of cards — reversing it here made the left cards jump in front
+	   and looked broken. */
+	.hand:hover .card:not(.added):not(.removing),
+	.hand:hover .card.flipped:not(.added):not(.removing) {
+		transform: rotate(calc(var(--rot-scale, 8) * 1deg * var(--offset))) translateY(calc(-40px + var(--abs-offset) * -6px));
 	}
 
 	/* Animation logic */

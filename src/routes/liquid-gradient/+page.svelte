@@ -7,7 +7,7 @@
 	let renderer, camera, scene, mesh, clock;
 	let currentUniforms = null;
 	let showPopover = false;
-	let activePreset = 'liquid';
+	let activePreset = 'manga';
 
 	// ── Playback controls ──────────────────────────────────────────────────────
 	let speed = 1;
@@ -568,6 +568,10 @@
 
 	// ── Three.js setup ─────────────────────────────────────────────────────────
 	onMount(() => {
+		// Lock scroll while on this full-screen canvas page.
+		// Done in JS (not :global CSS) so it reliably restores when navigating away.
+		document.body.style.overflow = 'hidden';
+
 		renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
 		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		renderer.setSize(innerWidth, innerHeight);
@@ -584,12 +588,19 @@
 
 		const vs = getViewSize();
 
-		currentUniforms = buildUniforms(presets[0]);
+		const startPreset = presets.find(p => p.id === activePreset) || presets[0];
+
+		if (typeof localStorage !== 'undefined' && !localStorage.getItem('lg-visited')) {
+			showPopover = true;
+			localStorage.setItem('lg-visited', '1');
+		}
+
+		currentUniforms = buildUniforms(startPreset);
 
 		const material = new THREE.ShaderMaterial({
 			uniforms: currentUniforms,
 			vertexShader,
-			fragmentShader: liquidFrag
+			fragmentShader: startPreset.frag
 		});
 
 		const geometry = new THREE.PlaneGeometry(vs.width, vs.height);
@@ -623,6 +634,7 @@
 		window.addEventListener('resize', onResize);
 
 		return () => {
+			document.body.style.overflow = ''; // restore scroll on page leave
 			cancelAnimationFrame(animFrameId);
 			window.removeEventListener('resize', onResize);
 			renderer.dispose();
@@ -634,7 +646,9 @@
 	<title>Liquid Gradient</title>
 </svelte:head>
 
-<a href="/pretext" class="next-button">Next →</a>
+<!-- Home button is provided by the shared layout Nav for consistency.
+     Only the page-specific "Next →" lives here. -->
+<a href="/pretext" class="nav-btn next-btn">Next →</a>
 
 <canvas bind:this={canvas}></canvas>
 
@@ -663,6 +677,7 @@
 	<div class="backdrop" on:click={() => (showPopover = false)}></div>
 	<div class="popover">
 		<p class="popover-title">Background</p>
+		<p class="popover-glsl">Written in GLSL · rendered via WebGL</p>
 		<div class="grid">
 			{#each presets as preset}
 				<button
@@ -762,7 +777,7 @@
 	:global(body) {
 		margin: 0;
 		padding: 0;
-		overflow: hidden;
+		/* overflow:hidden is set in JS onMount so it restores correctly on navigation */
 	}
 
 	canvas {
@@ -771,25 +786,30 @@
 		height: 100vh;
 	}
 
-	.next-button {
+	/* Matches the layout Home button (Nav.svelte) for a consistent nav across pages */
+	.nav-btn {
 		position: fixed;
-		top: 15px;
-		right: 20px;
-		z-index: 100;
-		background: none;
-		border: 2px solid #f0f0f0;
-		color: #f0f0f0;
-		padding: 8px 15px;
+		top: 14px;
+		z-index: 51;
+		background: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		color: rgba(255, 255, 255, 0.9);
+		padding: 8px 16px;
 		text-decoration: none;
-		border-radius: 5px;
-		font-weight: bold;
+		border-radius: 8px;
+		font-weight: 500;
 		font-family: 'Poppins', sans-serif;
-		transition: background-color 0.2s, color 0.2s;
+		font-size: 0.85rem;
+		transition: background 0.2s, border-color 0.2s, color 0.2s;
 	}
-	.next-button:hover {
-		background-color: #f0f0f0;
-		color: #121212;
+	.nav-btn:hover {
+		background: rgba(0, 0, 0, 0.7);
+		border-color: rgba(255, 255, 255, 0.35);
+		color: #fff;
 	}
+	.next-btn { right: 20px; }
 
 	.picker-btn {
 		position: fixed;
@@ -867,6 +887,14 @@
 		text-transform: uppercase;
 		color: rgba(255, 255, 255, 0.4);
 		font-family: system-ui, sans-serif;
+	}
+
+	.popover-glsl {
+		font-size: 10px;
+		letter-spacing: 0.08em;
+		color: rgba(255,255,255,0.25);
+		margin: -4px 0 12px;
+		text-transform: uppercase;
 	}
 
 	.grid {

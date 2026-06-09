@@ -1,4 +1,5 @@
 # Job Search — Sebastiaan
+
 **Available:** Week of July 14, 2026  
 **Target start:** August 2026  
 **Role:** Medior Frontend / Frontend + Fullstack  
@@ -8,36 +9,40 @@
 
 ## Status Overview
 
-| Area | Status |
-|------|--------|
-| Portfolio | Needs updates |
-| CV | Not started |
-| LinkedIn | Needs updates |
-| GitHub | School projects need migration |
-| Recruiter outreach | Not started |
+| Area               | Status                         |
+| ------------------ | ------------------------------ |
+| Portfolio          | Needs updates                  |
+| CV                 | Not started                    |
+| LinkedIn           | Needs updates                  |
+| GitHub             | School projects need migration |
+| Recruiter outreach | Not started                    |
 
 ---
 
 ## Portfolio (`Documents/GitHub/portfolio`)
 
 ### Projects to add
+
 - [x] **IntoGolf** — added ✓ (liveLink: intogolf.nl, mentions V3 + V3 Pro)
-  - [ ] Add screenshot — take one from intogolf.nl (mobile + desktop), save to `/static/intogolf.png`
+  - [x] Add screenshot — take one from intogolf.nl (mobile + desktop), save to `/static/intogolf.png` ✓
   - [ ] Add GitHub link once repo is migrated to personal account
 - [x] **PrimedLifter** — added ✓ (description written, highlighted as lead project)
-  - [ ] Add screenshot — save to `/static/primedlifter.png`
-  - [ ] Add live link once deployed/public
+  - [x] Add screenshot — save to `/static/primedlifter.png` ✓
+  - [x] Add live link once deployed/public ✓
   - [ ] Add GitHub link once repo is migrated
 
 ### Existing projects to fix
+
 - [x] **Interactive Dashboard** — removed ✓
 - [x] **Squad Page Yearbook** — broken links removed ✓
 - [x] **Embassy of the Free Mind** — broken GitHub link removed ✓
 
 ### About-me page
+
 - [x] Replace lorem ipsum with real content ✓ (powerlifter, coach, PrimedLifter story, IntoGolf background)
 
 ### General
+
 - [ ] Update README.md (currently the default SvelteKit scaffold template)
 - [ ] Make sure portfolio is deployed and live before you start sending it out
 
@@ -85,6 +90,7 @@ Starting from scratch. Things to include:
 ## Recruiter Outreach on LinkedIn
 
 ### Who to target
+
 Search LinkedIn for: `tech recruiter frontend developer Netherlands`  
 Companies to look at: Younify, Hays Technology, Randstad Digital, Computerfutures, Sthree, Michael Page Technology
 
@@ -118,22 +124,22 @@ Companies to look at: Younify, Hays Technology, Randstad Digital, Computerfuture
 
 ## Timeline
 
-| Date | Action |
-|------|--------|
-| Now → end June | Update portfolio, build CV, migrate GitHub projects |
-| End June | Portfolio live and polished, CV done, LinkedIn updated |
-| End June / early July | Start recruiter DMs, begin applying |
-| Week of July 14 | Available for interviews |
-| August 2026 | Target start date |
+| Date                  | Action                                                 |
+| --------------------- | ------------------------------------------------------ |
+| Now → end June        | Update portfolio, build CV, migrate GitHub projects    |
+| End June              | Portfolio live and polished, CV done, LinkedIn updated |
+| End June / early July | Start recruiter DMs, begin applying                    |
+| Week of July 14       | Available for interviews                               |
+| August 2026           | Target start date                                      |
 
 ---
 
 ## Salary Target (NL, 2026)
 
-| Role | Range |
-|------|-------|
+| Role            | Range                    |
+| --------------- | ------------------------ |
 | Medior Frontend | €3.000 – €4.200/mo gross |
-| Junior-Medior | €2.500 – €3.200/mo gross |
+| Junior-Medior   | €2.500 – €3.200/mo gross |
 
 Start negotiations at the top of the range you're comfortable with — Dutch companies expect it and rarely start at max.
 

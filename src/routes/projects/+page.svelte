@@ -17,7 +17,7 @@ Key features:
 — Calendar view for block planning
 — Offline-capable PWA — works in the gym without signal
 
-Stack: SvelteKit (Svelte 5), Supabase (Postgres + Auth), Vite, Vitest, PWA service worker. Live at primedlifter.app — actively used to coach real athletes.`;
+Stack: SvelteKit (Svelte 5), Supabase (Postgres + Auth), Vite, Vitest, PWA service worker. Live at primedlifter.app — actively used by real coaches and athletes.`;
 
 	const plFeatures = [
 		'RPE program builder',

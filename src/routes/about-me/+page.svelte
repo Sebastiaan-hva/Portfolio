@@ -79,7 +79,8 @@
 			<span class="hero-eyebrow">Frontend Developer · Netherlands</span>
 			<h1 class="hero-name">Sebastiaan<br />Hagoort</h1>
 			<p class="hero-sub">
-				I build interfaces that feel fast, look intentional, and work on every screen.
+				I build with the web, not against it: modern CSS and new platform features, accessible by
+				default. Not pixel-perfect, but genuinely responsive.
 			</p>
 			<span class="scroll-hint" aria-hidden="true">scroll</span>
 		</section>
@@ -116,7 +117,7 @@
 				I got tired of spreadsheets and built <strong>PrimedLifter</strong> — a PWA that replaces the
 				Google Sheets + Drive workflow coaches are still stuck with. It handles RPE calculations, auto-updating
 				training maxes, backdown sets, athlete management, and video review in one place. Built with
-				SvelteKit and Supabase. Running in production, used with real athletes.
+				SvelteKit and Supabase. Running in production, used by real coaches and athletes.
 			</p>
 		</section>
 

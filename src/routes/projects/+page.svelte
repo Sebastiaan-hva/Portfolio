@@ -41,16 +41,16 @@ Stack: SvelteKit (Svelte 5), Supabase (Postgres + Auth), Vite, Vitest, PWA servi
 			subtitle: 'V3, V3 Pro & Website',
 			tag: 'Internship',
 			shortDescription:
-				'Frontend intern at a SaaS platform used by golf professionals across the Netherlands. Shipped across three products: a static Astro marketing site, the core coaching app (Vue + Element Plus on a Laravel backend), and a pro-tier platform (Quasar/Vue) with swing-analysis tools, Mollie payments, and offline PWA support.',
+				'Frontend intern at a SaaS platform for golf professionals across the Netherlands. Shipped across three products — an Astro marketing site, the V3 coaching app (Vue + Element Plus / Laravel), and the V3 Pro platform (Quasar/Vue) — focused on scheduling & planning, CRM-style customer views, and offline PWA support.',
 			description: `IntoGolf is a SaaS company whose platform is used by golf professionals and academies across the Netherlands to manage lessons, availability, bookings, and student relationships. I joined as a frontend intern and worked across three parts of the product simultaneously.
 
 The public website (intogolf.nl) is built in Astro — static-first pages with inlined critical CSS and optimised fonts. My work here focused on performance and structure: fast-loading marketing pages that stay easy for the team to maintain.
 
-V3 is the core coaching app — a Vue + Element Plus frontend inside a Laravel application, built with Laravel Mix and using Pusher / Laravel Echo for real-time updates. Coming in mid-development meant getting up to speed fast on a large existing codebase and contributing to real features straight away. I worked on the scheduling system — calendar views (FullCalendar), lesson creation flows, and coach availability management.
+V3 is the core coaching app — a Vue + Element Plus frontend inside a Laravel application (Laravel Mix, with Pusher / Laravel Echo for real-time updates). Coming in mid-development meant getting up to speed fast on a large existing codebase. I worked across scheduling and planning — calendar and planner views (FullCalendar), lesson/clinic/event creation, tee-time booking, and coach availability — and built CRM-style customer views: a 360° customer profile with notes and history.
 
-V3 Pro is the expanded platform for larger academies, built with Quasar/Vue: lesson management, a CRM-style contact system, canvas-based video annotation for swing analysis (Fabric.js), Mollie payment integration, and offline PWA support via a service worker.
+V3 Pro is the expanded Quasar/Vue platform for larger academies. Here I focused on the offline PWA layer — a service worker with update handling, push notifications, and connection-status detection — so coaches can keep working without signal out on the course.
 
-Stack: Astro (website) · Vue + Element Plus, Laravel Mix, Pusher (V3) · Quasar/Vue, Fabric.js, Mollie, Workbox PWA (V3 Pro).`,
+Stack: Astro (website) · Vue + Element Plus, Laravel Mix, Pusher, FullCalendar (V3) · Quasar/Vue, Workbox PWA, push notifications (V3 Pro).`,
 			liveLink: 'https://intogolf.nl',
 			readmeLink: '',
 			logo: '/intogolf-logo.svg'

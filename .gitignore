@@ -28,3 +28,7 @@ vite.config.ts.timestamp-*
 
 *storybook.log
 storybook-static
+
+# Private — contains personal contact details, must NOT be published to this public repo
+/cv
+PROFILE_README_DRAFT.md

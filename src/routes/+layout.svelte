@@ -23,3 +23,12 @@
 <main>
 	{@render children()}
 </main>
+
+<style>
+	/* Base reset — kills the default body margin that caused stray scrollbars
+	   (notably on the landing page, which fills the full viewport). */
+	:global(html, body) {
+		margin: 0;
+		padding: 0;
+	}
+</style>

@@ -114,7 +114,7 @@
            We move the styles that were on :global(body) to here.
         */
 		height: 100vh;
-		width: 100vw;
+		width: 100%;
 		margin: 0;
 		padding: 0;
 		box-sizing: border-box;

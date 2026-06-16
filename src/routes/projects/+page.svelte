@@ -41,16 +41,16 @@ Stack: SvelteKit (Svelte 5), Supabase (Postgres + Auth), Vite, Vitest, PWA servi
 			subtitle: 'V3, V3 Pro & Website',
 			tag: 'Internship',
 			shortDescription:
-				'Frontend intern at a SaaS platform used by golf professionals across the Netherlands. Shipped across three products: a static Astro marketing site, the core coaching app (Vue/Quasar), and a pro-tier platform with swing-analysis tools, Mollie payments, and offline PWA support.',
+				'Frontend intern at a SaaS platform used by golf professionals across the Netherlands. Shipped across three products: a static Astro marketing site, the core coaching app (Vue + Element Plus on a Laravel backend), and a pro-tier platform (Quasar/Vue) with swing-analysis tools, Mollie payments, and offline PWA support.',
 			description: `IntoGolf is a SaaS company whose platform is used by golf professionals and academies across the Netherlands to manage lessons, availability, bookings, and student relationships. I joined as a frontend intern and worked across three parts of the product simultaneously.
 
-The public website (intogolf.nl) was built in Astro with React islands and Keystatic as the CMS. My work here focused on performance and structure — static-first pages, clean content management for the team, and making the marketing site easy to maintain.
+The public website (intogolf.nl) is built in Astro — static-first pages with inlined critical CSS and optimised fonts. My work here focused on performance and structure: fast-loading marketing pages that stay easy for the team to maintain.
 
-V3 is the core coaching app, a full rebuild from scratch. Coming in mid-development meant getting up to speed fast on an existing codebase and contributing to real features straight away. I worked on the scheduling system — calendar views, lesson creation flows, and coach availability management.
+V3 is the core coaching app — a Vue + Element Plus frontend inside a Laravel application, built with Laravel Mix and using Pusher / Laravel Echo for real-time updates. Coming in mid-development meant getting up to speed fast on a large existing codebase and contributing to real features straight away. I worked on the scheduling system — calendar views (FullCalendar), lesson creation flows, and coach availability management.
 
-V3 Pro is the expanded platform for larger academies: lesson management, a CRM-style contact system, video recording with canvas-based annotation tools for swing analysis, payment integration with Mollie, and offline PWA behaviour with push notifications.
+V3 Pro is the expanded platform for larger academies, built with Quasar/Vue: lesson management, a CRM-style contact system, canvas-based video annotation for swing analysis (Fabric.js), Mollie payment integration, and offline PWA support via a service worker.
 
-Stack: Astro, React (website) · Quasar/Vue, Firebase (V3 & V3 Pro) · PWA, service worker, push notifications.`,
+Stack: Astro (website) · Vue + Element Plus, Laravel Mix, Pusher (V3) · Quasar/Vue, Fabric.js, Mollie, Workbox PWA (V3 Pro).`,
 			liveLink: 'https://intogolf.nl',
 			readmeLink: '',
 			logo: '/intogolf-logo.svg'
@@ -80,10 +80,10 @@ Stack: HTML, CSS, JavaScript, Node.js, Liquid templating, SSR, AVIF image optimi
 			subtitle: 'SvelteKit · Headless CMS',
 			tag: 'School project',
 			shortDescription:
-				"Full website redesign for an Amsterdam foundation in SvelteKit. WCAG accessibility compliance, headless CMS integration, content-first layout reflecting the foundation's ethos of open inquiry.",
+				"Full website redesign for an Amsterdam foundation in SvelteKit. Reusable components, a focus on accessibility, and GSAP-driven motion in a content-first layout that reflects the foundation's ethos of open inquiry.",
 			description: `Full redesign for the Embassy of the Free Mind using SvelteKit. The EFM is an Amsterdam foundation dedicated to freedom of thought and open inquiry — the design reflects that with a clean, content-first layout.
 
-Focus areas: component reusability, WCAG accessibility compliance, and connecting the frontend to a headless CMS for content management.`,
+Focus areas: component reusability, accessibility, and GSAP-driven animation for a polished, content-first experience.`,
 			liveLink: 'https://embassyofthefreemind.dev.fdnd.nl/',
 			readmeLink: ''
 		},

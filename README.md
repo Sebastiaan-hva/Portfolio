@@ -39,7 +39,7 @@ An interactive, premium portfolio website showcasing personal and professional f
 - **Description**: Rebuilt Funda's detail view in 3 weeks adhering strictly to progressive enhancement (Semantic HTML first, CSS layout second, JS strictly last). Implemented AVIF image optimization using responsive `<picture>` tags.
 - **Stack**: Node.js, Liquid templating, Semantic HTML, CSS, Vanilla JS.
 - **Live Demo**: [POC on Render](https://proof-of-concept-1-6ez0.onrender.com/)
-- **GitHub**: [proof-of-concept](https://github.com/Sebastiaan-hva/proof-of-concept)
+- **GitHub**: [proof-of-concept](https://github.com/sebas-hagoort/proof-of-concept)
 
 ### 4. Embassy of the Free Mind
 

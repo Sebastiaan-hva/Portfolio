@@ -71,7 +71,7 @@ On the server, Liquid templating handles the page structure modularly. House ima
 
 Stack: HTML, CSS, JavaScript, Node.js, Liquid templating, SSR, AVIF image optimisation.`,
 			liveLink: 'https://proof-of-concept-1-6ez0.onrender.com/',
-			readmeLink: 'https://github.com/Sebastiaan-hva/proof-of-concept'
+			readmeLink: 'https://github.com/sebas-hagoort/proof-of-concept'
 		},
 		{
 			id: 'embassy',
